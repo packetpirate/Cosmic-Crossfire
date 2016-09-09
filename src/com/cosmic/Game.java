@@ -11,6 +11,6 @@ public class Game extends Application {
 	@Override
 	public void start(Stage stage) {
 		stage.setTitle("Cosmic Crossfire");
-		
+		new Framework(stage);
 	}
 }
