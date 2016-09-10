@@ -20,6 +20,14 @@ public class Player {
 	public static final double SPEED = 2.5;
 	private static final boolean SHOW_COLLIDER = false;
 	
+	private int state;
+	public int getState() { return state; }
+	public void setState(int state) { 
+		this.state = state;
+		if(this.state == 0) image = Player.SHIP_IMAGE;
+		else if(this.state == 1) image = Player.THRUST_IMAGE;
+	}
+	
 	private int health;
 	public int getHealth() { return health; }
 	public void takeDamage() { health--; }
@@ -27,7 +35,10 @@ public class Player {
 	
 	private int lives;
 	public int getLives() { return lives; }
-	public void die() { lives--; }
+	public void die() { 
+		lives--;
+		reset(gameOver());
+	}
 	public boolean gameOver() { return (lives == 0); }
 	
 	private Pair<Double> position;
@@ -37,17 +48,19 @@ public class Player {
 		position.x += Player.SPEED * Math.cos(theta);
 		position.y += Player.SPEED * Math.sin(theta);
 	}
+	public boolean collision(Pair<Double> pos) {
+		return Framework.inRange(pos, position, Player.SHIP_SIZE);
+	}
 	
 	private PowerUps pwrUps;
 	public PowerUps getPowerUps() { return pwrUps; }
 	
 	private Image image;
 	public Image getImage() { return image; }
-	public void setImage(Image image) { this.image = image; }
 	
 	public Player() {
+		state = 0;
 		reset(true);
-		
 		image = Player.SHIP_IMAGE;
 	}
 	
@@ -56,7 +69,10 @@ public class Player {
 									(double)(Framework.CANVAS_HEIGHT / 2));
 		theta = -(Math.PI / 2);
 		pwrUps = new PowerUps();
-		image = Player.SHIP_IMAGE;
+		
+		if(this.state == 0) image = Player.SHIP_IMAGE;
+		else if(this.state == 1) image = Player.THRUST_IMAGE;
+		
 		if(gameOver) {
 			health = Player.MAX_HEALTH;
 			lives = Player.MAX_LIVES;

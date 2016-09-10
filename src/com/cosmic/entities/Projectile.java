@@ -6,6 +6,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Projectile {
+	private int id;
+	public int getID() { return id; }
 	private Pair<Double> position;
 	public Pair<Double> getPosition() { return position; }
 	private double theta;
@@ -13,11 +15,12 @@ public class Projectile {
 	private double size;
 	public double getSize() { return size; }
 	
-	public Projectile(double x, double y, double theta, double speed, double size) {
-		this(new Pair<Double>(x, y), theta, speed, size);
+	public Projectile(int id, double x, double y, double theta, double speed, double size) {
+		this(id, new Pair<Double>(x, y), theta, speed, size);
 	}
 	
-	public Projectile(Pair<Double> pos, double theta, double speed, double size) {
+	public Projectile(int id, Pair<Double> pos, double theta, double speed, double size) {
+		this.id = id;
 		this.position = new Pair<Double>(pos.x, pos.y);
 		this.theta = theta;
 		this.speed = speed;

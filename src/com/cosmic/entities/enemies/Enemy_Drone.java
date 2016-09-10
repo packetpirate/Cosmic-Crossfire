@@ -8,6 +8,7 @@ import com.cosmic.behaviors.MovementBehavior;
 import com.cosmic.behaviors.WeaponBehavior;
 import com.cosmic.entities.Enemy;
 import com.cosmic.entities.Projectile;
+import com.cosmic.utils.IDGenerator;
 import com.cosmic.utils.Pair;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -17,7 +18,7 @@ public class Enemy_Drone extends Enemy {
 	public static final double FIRING_DIST = 150.0;
 	
 	public Enemy_Drone(Pair<Double> pos) {
-		super(pos, MovementBehavior.SHIP_DRONE, WeaponBehavior.BASIC_FIRE);
+		super(IDGenerator.createID(), pos, MovementBehavior.SHIP_DRONE, WeaponBehavior.BASIC_FIRE);
 		image = Enemy.SHIP_DRONE;
 	}
 
@@ -28,7 +29,7 @@ public class Enemy_Drone extends Enemy {
 		List<Projectile> shots = new ArrayList<Projectile>();
 		if(getWeaponBehavior().canFire(currentTime) &&
 		   Framework.inRange(position, playerPos, Enemy_Drone.FIRING_DIST)) {
-			shots = getWeaponBehavior().fire(position, theta, currentTime);
+			shots = getWeaponBehavior().fire(id, position, theta, currentTime);
 		}
 		return shots;
 	}

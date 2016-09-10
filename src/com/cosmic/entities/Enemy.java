@@ -12,8 +12,15 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public abstract class Enemy {
+	protected int id;
+	public int getID() { return id; }
+	public boolean isParent(int projID) { return (id == projID); }
+	
 	protected Pair<Double> position;
 	public Pair<Double> getPosition() { return position; }
+	public boolean collision(Pair<Double> pos) {
+		return Framework.inRange(pos, position, image.getWidth());
+	}
 	protected double theta;
 	
 	private MovementBehavior mb;
@@ -23,12 +30,13 @@ public abstract class Enemy {
 	private WeaponBehavior wb;
 	public WeaponBehavior getWeaponBehavior() { return wb; }
 	public void fire(Pair<Double> playerPos, long currentTime) { 
-		wb.fire(position, Framework.getHypotenuse(position, playerPos), currentTime); 
+		wb.fire(id, position, Framework.getHypotenuse(position, playerPos), currentTime); 
 	}
 	
 	protected Image image;
 
-	public Enemy(Pair<Double> pos, MovementBehavior mb, WeaponBehavior wb) { // Number One
+	public Enemy(int id, Pair<Double> pos, MovementBehavior mb, WeaponBehavior wb) { // Number One
+		this.id = id;
 		this.position = new Pair<Double>(pos.x, pos.y);
 		this.theta = 0;
 		this.mb = mb;

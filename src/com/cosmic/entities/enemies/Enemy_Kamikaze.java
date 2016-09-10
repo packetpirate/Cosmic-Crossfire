@@ -8,6 +8,7 @@ import com.cosmic.behaviors.MovementBehavior;
 import com.cosmic.behaviors.WeaponBehavior;
 import com.cosmic.entities.Enemy;
 import com.cosmic.entities.Projectile;
+import com.cosmic.utils.IDGenerator;
 import com.cosmic.utils.Pair;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -16,7 +17,7 @@ import javafx.scene.transform.Rotate;
 public class Enemy_Kamikaze extends Enemy{
 
 	public Enemy_Kamikaze(Pair<Double> pos) {
-		super(pos, MovementBehavior.SHIP_KAMIK, WeaponBehavior.BASIC_FIRE);
+		super(IDGenerator.createID(), pos, MovementBehavior.SHIP_KAMIK, WeaponBehavior.BASIC_FIRE);
 		image = Enemy.SHIP_KAMIK;
 	}
 

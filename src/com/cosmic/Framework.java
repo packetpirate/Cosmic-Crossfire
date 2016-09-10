@@ -10,6 +10,7 @@ import com.cosmic.entities.Player;
 import com.cosmic.entities.Projectile;
 import com.cosmic.entities.enemies.Enemy_Drone;
 import com.cosmic.gfx.Starfield;
+import com.cosmic.utils.IDGenerator;
 import com.cosmic.utils.Pair;
 
 import javafx.animation.AnimationTimer;
@@ -86,18 +87,50 @@ public class Framework {
 		mainStage.show();
 	}
 	
+	private void reset() {
+		enemies.clear();
+		projectiles.clear();
+		IDGenerator.resetID();
+	}
+	
 	private void update(long currentTime) {
 		starfield.update(currentTime);
+		
+		// Check projectiles for collisions.
+		Iterator<Projectile> pit = projectiles.iterator();
+		Iterator<Enemy> eit = enemies.iterator();
+		while(pit.hasNext()) {
+			Projectile p = pit.next();
+			if(!inBounds(p.getPosition().x, p.getPosition().y)) {
+				pit.remove();
+				continue;
+			} else if(player.collision(p.getPosition())) {
+				pit.remove();
+				player.die();
+				if(player.gameOver()) reset();
+				continue;
+			}
+			
+			while(eit.hasNext()) {
+				Enemy e = eit.next();
+				if(e.collision(p.getPosition()) && !e.isParent(p.getID())) {
+					eit.remove();
+					pit.remove();
+					break;
+				}
+			}
+		}
+		
 		player.update(currentTime, input);
 		
-		Iterator<Enemy> eit = enemies.iterator();
+		eit = enemies.iterator();
 		while(eit.hasNext()) {
 			Enemy e = eit.next();
 			List<Projectile> shots = e.update(currentTime, player.getPosition());
 			projectiles.addAll(shots);
 		}
 		
-		Iterator<Projectile> pit = projectiles.iterator();
+		pit = projectiles.iterator();
 		while(pit.hasNext()) {
 			Projectile p = pit.next();
 			p.update();
@@ -110,19 +143,26 @@ public class Framework {
 		
 		starfield.render(gc);
 		
-		Iterator<Enemy> eit = enemies.iterator();
-		while(eit.hasNext()) {
-			Enemy e = eit.next();
-			e.render(gc);
-		}
-		
 		Iterator<Projectile> pit = projectiles.iterator();
 		while(pit.hasNext()) {
 			Projectile p = pit.next();
 			p.render(gc);
 		}
 		
+		Iterator<Enemy> eit = enemies.iterator();
+		while(eit.hasNext()) {
+			Enemy e = eit.next();
+			e.render(gc);
+		}
+		
 		player.render(gc);
+	}
+	
+	public static boolean inBounds(double x, double y) {
+		return ((x >= 0) && 
+				(x <= Framework.CANVAS_WIDTH) && 
+				(y >= 0) && 
+				(y <= Framework.CANVAS_HEIGHT));
 	}
 	
 	public static boolean inRange(Pair<Double> src, Pair<Double> target, double dist) {
@@ -140,13 +180,13 @@ public class Framework {
 		String code = key.getCode().toString();
 		if(!input.contains(code)) {
 			input.add(code);
-			if(code.equals("W")) player.setImage(Player.THRUST_IMAGE);
+			if(code.equals("W")) player.setState(1);
 		}
 	};
 	
 	EventHandler<KeyEvent> keyRelease = key -> {
 		String code = key.getCode().toString();
 		input.remove(code);
-		if(code.equals("W")) player.setImage(Player.SHIP_IMAGE);
+		if(code.equals("W")) player.setState(0);
 	};
 }
