@@ -10,6 +10,7 @@ import com.cosmic.entities.Projectile;
 import com.cosmic.utils.Pair;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.transform.Rotate;
 
 public class Enemy_Drone extends Enemy {
 	public Enemy_Drone(Pair<Double> pos) {
@@ -27,6 +28,17 @@ public class Enemy_Drone extends Enemy {
 
 	@Override
 	public void render(GraphicsContext gc) {
-		
+		if(getImage() != null) {
+			Rotate r = new Rotate(getTheta(), getPosition().x, getPosition().y);
+			
+			gc.save();
+			gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
+			
+			double x = getPosition().x - (getImage().getWidth() / 2);
+			double y = getPosition().y - (getImage().getHeight() / 2);
+			gc.drawImage(getImage(), x, y);
+			
+			gc.restore();
+		}
 	}
 }

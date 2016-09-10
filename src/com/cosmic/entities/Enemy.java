@@ -17,6 +17,8 @@ public abstract class Enemy {
 	
 	private Pair<Double> position;
 	public Pair<Double> getPosition() { return position; }
+	private double theta;
+	public double getTheta() { return theta; }
 	
 	private MovementBehavior mb;
 	public MovementBehavior getMovementBehavior() { return mb; }
@@ -34,6 +36,7 @@ public abstract class Enemy {
 	public Enemy(Pair<Double> pos, MovementBehavior mb, WeaponBehavior wb) { // Number One
 		this.position.x = pos.x;
 		this.position.y = pos.y;
+		this.theta = 0;
 		this.mb = mb;
 		this.wb = wb;
 	}
