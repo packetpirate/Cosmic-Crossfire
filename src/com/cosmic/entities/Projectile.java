@@ -18,8 +18,7 @@ public class Projectile {
 	}
 	
 	public Projectile(Pair<Double> pos, double theta, double speed, double size) {
-		this.position.x = pos.x;
-		this.position.y = pos.y;
+		this.position = new Pair<Double>(pos.x, pos.y);
 		this.theta = theta;
 		this.speed = speed;
 		this.size = size;

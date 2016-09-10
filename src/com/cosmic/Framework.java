@@ -7,6 +7,7 @@ import java.util.Random;
 
 import com.cosmic.entities.Enemy;
 import com.cosmic.entities.Player;
+import com.cosmic.entities.Projectile;
 import com.cosmic.entities.enemies.Enemy_Drone;
 import com.cosmic.gfx.Starfield;
 import com.cosmic.utils.Pair;
@@ -66,6 +67,7 @@ public class Framework {
 		player = new Player();
 		
 		enemies = new ArrayList<Enemy>();
+		enemies.add(new Enemy_Drone(new Pair<Double>(48.0, 48.0)));
 		
 		final long startTime = System.nanoTime();
 		
@@ -84,6 +86,12 @@ public class Framework {
 	private void update(long currentTime) {
 		starfield.update(currentTime);
 		player.update(currentTime, input);
+		
+		Iterator<Enemy> it = enemies.iterator();
+		while(it.hasNext()) {
+			Enemy e = it.next();
+			List<Projectile> shots = e.update(currentTime, player.getPosition());
+		}
 	}
 	
 	private void render() {
