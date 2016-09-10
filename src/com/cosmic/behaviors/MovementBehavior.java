@@ -44,8 +44,7 @@ public class MovementBehavior {
 		@Override
 		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos) {
 			Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
-			Pair<Double> targetPos = new Pair<>(playerPos.x, playerPos.y);
-			if(newPos != targetPos) {
+			if(currPos != playerPos) {
 				// Move closer to the player.
 				double theta = Framework.getHypotenuse(currPos, playerPos);
 				newPos.x += getSpeed() * Math.cos(theta);
