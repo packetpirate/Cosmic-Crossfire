@@ -1,5 +1,7 @@
 package com.cosmic;
 
+import com.cosmic.utils.Pair;
+
 import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -51,5 +53,16 @@ public class Framework {
 	private void render() {
 		gc.setFill(Color.WHITE);
 		gc.fillRect(0, 0, Framework.CANVAS_WIDTH, Framework.CANVAS_HEIGHT);
+	}
+	
+	public static boolean inRange(Pair<Double> src, Pair<Double> target, double dist) {
+		double a = (target.x - src.x);
+		double b = (target.y - src.y);
+		double d = Math.sqrt((a * a) + (b * b));
+		return (d <= dist);
+	}
+	
+	public static double getHypotenuse(Pair<Double> src, Pair<Double> target) {
+		return Math.atan2((target.y - src.y), (target.x - src.x));
 	}
 }
