@@ -1,5 +1,9 @@
 package com.cosmic.behaviors;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.cosmic.Framework;
 import com.cosmic.entities.Projectile;
 import com.cosmic.utils.Pair;
 
@@ -18,7 +22,7 @@ public class WeaponBehavior {
 	 * @param theta The direction for the projectile to move in.
 	 * @return A projectile representing the one fired from the enemy weapon.
 	 */
-	public Projectile fire(Pair<Double> pos, double theta, long currentTime) {
+	public List<Projectile> fire(Pair<Double> pos, double theta, long currentTime) {
 		return null;
 	}
 	
@@ -32,11 +36,39 @@ public class WeaponBehavior {
 	
 	// PRE-DEFINED WEAPON BEHAVIORS START
 	
+	public static final WeaponBehavior BASIC_FIRE = new WeaponBehavior(1000) {
+		@Override
+		public List<Projectile> fire(Pair<Double> pos, double theta, long currentTime) {
+			recharge(currentTime);
+			Projectile p = new Projectile(pos, theta, 5.0, 3.0);
+			List<Projectile> shots = new ArrayList<Projectile>();
+			shots.add(p);
+			return shots;
+		}
+	};
+	
 	public static final WeaponBehavior RAPID_FIRE = new WeaponBehavior(500) {
 		@Override
-		public Projectile fire(Pair<Double> pos, double theta, long currentTime) {
+		public List<Projectile> fire(Pair<Double> pos, double theta, long currentTime) {
 			recharge(currentTime);
-			return new Projectile(pos, theta, 5.0, 4.0);
+			Projectile p = new Projectile(pos, theta, 5.0, 4.0);
+			List<Projectile> shots = new ArrayList<Projectile>();
+			shots.add(p);
+			return shots;
+		}
+	};
+	
+	public static final WeaponBehavior SHOTG_FIRE = new WeaponBehavior(2000) {
+		@Override
+		public List<Projectile> fire(Pair<Double> pos, double theta, long currentTime) {
+			recharge(currentTime);
+			List<Projectile> shots = new ArrayList<Projectile>();
+			for(int i = 0; i < 5; i++) {
+				double th = (theta - 20.0) + (Framework.rand.nextDouble() * 40.0);
+				Projectile p = new Projectile(pos, th, 5.0, 5.0);
+			}
+			
+			return shots;
 		}
 	};
 	

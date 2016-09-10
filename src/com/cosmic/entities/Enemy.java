@@ -3,11 +3,12 @@ package com.cosmic.entities;
 import com.cosmic.Framework;
 import com.cosmic.behaviors.MovementBehavior;
 import com.cosmic.behaviors.WeaponBehavior;
+import com.cosmic.entities.enemies.Enemy_Drone;
 import com.cosmic.utils.Pair;
 
 import javafx.scene.canvas.GraphicsContext;
 
-public class Enemy {
+public abstract class Enemy {
 	private Pair<Double> position;
 	public Pair<Double> getPosition() { return position; }
 	
@@ -20,22 +21,23 @@ public class Enemy {
 	public void fire(Pair<Double> playerPos, long currentTime) { 
 		wb.fire(position, Framework.getHypotenuse(position, playerPos), currentTime); 
 	}
-	
-	public Enemy(double x, double y) { // Number One
-		this(x, y, MovementBehavior.SHIP_DRONE);
+
+	public Enemy(Pair<Double> pos, MovementBehavior mb, WeaponBehavior wb) { // Number One
+		this.position.x = pos.x;
+		this.position.y = pos.y;
+		this.mb = mb;
+		this.wb = wb;
 	}
 	
-	public Enemy(double x, double y, MovementBehavior movement) { // Number One
-		this.position.x = x;
-		this.position.y = y;
-		this.mb = movement;
-	}
+	public abstract void update(long currentTime);
+	public abstract void render(GraphicsContext gc);
 	
-	public void update(long deltaTime) {
-		// To be overridden...
-	}
-	
-	public void render(GraphicsContext gc) {
-		// To be overridden.
+	public enum Type {
+		DRONE;
+		
+		public Enemy createInstance(Type t, Pair<Double> pos) {
+			if(t == Type.DRONE) return new Enemy_Drone(pos);
+			else return null;
+		}
 	}
 }
