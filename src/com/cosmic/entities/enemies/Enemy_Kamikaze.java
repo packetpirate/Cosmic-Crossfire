@@ -10,7 +10,7 @@ import javafx.scene.canvas.GraphicsContext;
 public class Enemy_Kamikaze extends Enemy{
 
 	public Enemy_Kamikaze(Pair<Double> pos) {
-		super(pos, mb, wb);
+		super(pos, MovementBehavior.SHIP_KAMIK, WeaponBehavior.BASIC_FIRE);
 		// TODO Auto-generated constructor stub
 	}
 
