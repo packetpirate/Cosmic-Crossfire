@@ -2,10 +2,11 @@ package com.cosmic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.cosmic.entities.Player;
+import com.cosmic.gfx.Starfield;
 import com.cosmic.utils.Pair;
-import com.cosmic.utils.Tools;
 
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
@@ -13,16 +14,17 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 
 public class Framework {
 	public static final int CANVAS_WIDTH = 600;
 	public static final int CANVAS_HEIGHT = 600;
 	public static final long NANO_TO_SECS = 1000000000L;
+	public static final long NANO_TO_MS = 1000000L;
+	
+	public static final Random rand = new Random();
 	
 	private Stage mainStage;
 	private Scene mainScene;
@@ -31,11 +33,16 @@ public class Framework {
 	
 	private List<String> input;
 	
+	private Starfield starfield;
 	private Player player;
 	
 	public Framework(Stage stage) {
 		mainStage = stage;
 		mainStage.setResizable(false);
+		mainStage.setMaxWidth(Framework.CANVAS_WIDTH);
+		mainStage.setMaxHeight(Framework.CANVAS_HEIGHT);
+		mainStage.requestFocus();
+		mainStage.centerOnScreen();
 		
 		Group root = new Group();
 		mainScene = new Scene(root);
@@ -50,6 +57,7 @@ public class Framework {
 		mainScene.setOnKeyPressed(keyPress);
 		mainScene.setOnKeyReleased(keyRelease);
 		
+		starfield = new Starfield();
 		player = new Player();
 		
 		final long startTime = System.nanoTime();
@@ -57,6 +65,7 @@ public class Framework {
 		new AnimationTimer() {
 			@Override
 			public void handle(long currentTime) {
+				currentTime /= Framework.NANO_TO_MS;
 				update(currentTime);
 				render();
 			}
@@ -66,13 +75,15 @@ public class Framework {
 	}
 	
 	private void update(long currentTime) {
+		starfield.update(currentTime);
 		player.update(currentTime, input);
 	}
 	
 	private void render() {
-		gc.setFill(Color.WHITE);
+		gc.setFill(Color.BLACK);
 		gc.fillRect(0, 0, Framework.CANVAS_WIDTH, Framework.CANVAS_HEIGHT);
 		
+		starfield.render(gc);
 		player.render(gc);
 	}
 	
@@ -89,11 +100,15 @@ public class Framework {
 	
 	EventHandler<KeyEvent> keyPress = key -> {
 		String code = key.getCode().toString();
-		if(!input.contains(code)) input.add(code);
+		if(!input.contains(code)) {
+			input.add(code);
+			if(code.equals("W")) player.setImage(Player.THRUST_IMAGE);
+		}
 	};
 	
 	EventHandler<KeyEvent> keyRelease = key -> {
 		String code = key.getCode().toString();
 		input.remove(code);
+		if(code.equals("W")) player.setImage(Player.SHIP_IMAGE);
 	};
 }

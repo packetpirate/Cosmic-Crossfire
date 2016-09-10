@@ -17,7 +17,9 @@ public class Enemy {
 	
 	private WeaponBehavior wb;
 	public WeaponBehavior getWeaponBehavior() { return wb; }
-	public void fire(Pair<Double> playerPos) { wb.fire(position, Framework.getHypotenuse(position, playerPos)); }
+	public void fire(Pair<Double> playerPos, long currentTime) { 
+		wb.fire(position, Framework.getHypotenuse(position, playerPos), currentTime); 
+	}
 	
 	public Enemy(double x, double y) { // Number One
 		this(x, y, MovementBehavior.SHIP_DRONE);

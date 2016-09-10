@@ -18,7 +18,7 @@ public class WeaponBehavior {
 	 * @param theta The direction for the projectile to move in.
 	 * @return A projectile representing the one fired from the enemy weapon.
 	 */
-	public Projectile fire(Pair<Double> pos, double theta) {
+	public Projectile fire(Pair<Double> pos, double theta, long currentTime) {
 		return null;
 	}
 	
@@ -26,11 +26,16 @@ public class WeaponBehavior {
 		return ((currentTime - lastFired) >= cooldown);
 	}
 	
+	public void recharge(long currentTime) {
+		lastFired = currentTime;
+	}
+	
 	// PRE-DEFINED WEAPON BEHAVIORS START
 	
 	public static final WeaponBehavior RAPID_FIRE = new WeaponBehavior(500) {
 		@Override
-		public Projectile fire(Pair<Double> pos, double theta) {
+		public Projectile fire(Pair<Double> pos, double theta, long currentTime) {
+			recharge(currentTime);
 			return new Projectile(pos, theta, 5.0, 4.0);
 		}
 	};

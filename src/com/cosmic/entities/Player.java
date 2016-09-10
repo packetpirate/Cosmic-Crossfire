@@ -14,10 +14,11 @@ import javafx.scene.transform.Rotate;
 public class Player {
 	public static final double SHIP_SIZE = 32;
 	public static final Image SHIP_IMAGE = Tools.LoadImage("player_phoenix.png");
+	public static final Image THRUST_IMAGE = Tools.LoadImage("player_phoenix_thrust.png");
 	public static final int MAX_HEALTH = 4;
 	public static final int MAX_LIVES = 3;
 	public static final double SPEED = 2.5;
-	private static final boolean SHOW_COLLIDER = true;
+	private static final boolean SHOW_COLLIDER = false;
 	
 	private int health;
 	public int getHealth() { return health; }
@@ -42,6 +43,7 @@ public class Player {
 	
 	private Image image;
 	public Image getImage() { return image; }
+	public void setImage(Image image) { this.image = image; }
 	
 	public Player() {
 		reset(true);
@@ -54,6 +56,7 @@ public class Player {
 									(double)(Framework.CANVAS_HEIGHT / 2));
 		theta = -(Math.PI / 2);
 		pwrUps = new PowerUps();
+		image = Player.SHIP_IMAGE;
 		if(gameOver) {
 			health = Player.MAX_HEALTH;
 			lives = Player.MAX_LIVES;
