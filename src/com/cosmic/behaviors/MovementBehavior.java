@@ -39,6 +39,23 @@ public class MovementBehavior {
 		}
 	};
 	
+	public static final MovementBehavior SHIP_KAMIK = new MovementBehavior(3.0) {
+
+		@Override
+		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos) {
+			Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
+			Pair<Double> targetPos = new Pair<>(playerPos.x, playerPos.y);
+			if(newPos != targetPos) {
+				// Move closer to the player.
+				double theta = Framework.getHypotenuse(currPos, playerPos);
+				newPos.x += getSpeed() * Math.cos(theta);
+				newPos.y += getSpeed() * Math.sin(theta);
+				}
+			
+			return newPos;
+		}
+	};
+	
 	// TODO: More movement behaviors!
 	
 	// PRE-DEFINED MOVEMENT BEHAVIORS END HERE
