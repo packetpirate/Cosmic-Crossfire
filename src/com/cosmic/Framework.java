@@ -41,6 +41,7 @@ public class Framework {
 	private Player player;
 	
 	private List<Enemy> enemies;
+	private List<Projectile> projectiles;
 	
 	public Framework(Stage stage) {
 		mainStage = stage;
@@ -69,6 +70,8 @@ public class Framework {
 		enemies = new ArrayList<Enemy>();
 		enemies.add(new Enemy_Drone(new Pair<Double>(48.0, 48.0)));
 		
+		projectiles = new ArrayList<Projectile>();
+		
 		final long startTime = System.nanoTime();
 		
 		new AnimationTimer() {
@@ -87,10 +90,17 @@ public class Framework {
 		starfield.update(currentTime);
 		player.update(currentTime, input);
 		
-		Iterator<Enemy> it = enemies.iterator();
-		while(it.hasNext()) {
-			Enemy e = it.next();
+		Iterator<Enemy> eit = enemies.iterator();
+		while(eit.hasNext()) {
+			Enemy e = eit.next();
 			List<Projectile> shots = e.update(currentTime, player.getPosition());
+			projectiles.addAll(shots);
+		}
+		
+		Iterator<Projectile> pit = projectiles.iterator();
+		while(pit.hasNext()) {
+			Projectile p = pit.next();
+			p.update();
 		}
 	}
 	
@@ -100,10 +110,16 @@ public class Framework {
 		
 		starfield.render(gc);
 		
-		Iterator<Enemy> it = enemies.iterator();
-		while(it.hasNext()) {
-			Enemy e = it.next();
+		Iterator<Enemy> eit = enemies.iterator();
+		while(eit.hasNext()) {
+			Enemy e = eit.next();
 			e.render(gc);
+		}
+		
+		Iterator<Projectile> pit = projectiles.iterator();
+		while(pit.hasNext()) {
+			Projectile p = pit.next();
+			p.render(gc);
 		}
 		
 		player.render(gc);

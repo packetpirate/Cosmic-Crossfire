@@ -13,7 +13,7 @@ public class WeaponBehavior {
 	
 	public WeaponBehavior(long cooldown) {
 		this.cooldown = cooldown;
-		this.lastFired = Long.MAX_VALUE;
+		this.lastFired = 0;
 	}
 	
 	/**
@@ -40,7 +40,7 @@ public class WeaponBehavior {
 		@Override
 		public List<Projectile> fire(Pair<Double> pos, double theta, long currentTime) {
 			recharge(currentTime);
-			Projectile p = new Projectile(pos, theta, 5.0, 3.0);
+			Projectile p = new Projectile(pos, theta, 5.0, 4.0);
 			List<Projectile> shots = new ArrayList<Projectile>();
 			shots.add(p);
 			return shots;

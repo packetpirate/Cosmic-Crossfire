@@ -1,6 +1,7 @@
 package com.cosmic.behaviors;
 
 import com.cosmic.Framework;
+import com.cosmic.entities.enemies.Enemy_Drone;
 import com.cosmic.utils.Pair;
 
 public class MovementBehavior {
@@ -23,12 +24,12 @@ public class MovementBehavior {
 	
 	// PRE-DEFINED MOVEMENT BEHAVIORS START HERE
 	
-	public static final MovementBehavior SHIP_DRONE = new MovementBehavior(5.0) {
+	public static final MovementBehavior SHIP_DRONE = new MovementBehavior(3.0) {
 		@Override
 		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos) {
 			Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
 			
-			if(!Framework.inRange(currPos, playerPos, 150.0)) {
+			if(!Framework.inRange(currPos, playerPos, Enemy_Drone.FIRING_DIST)) {
 				// Move closer to the player.
 				double theta = Framework.getHypotenuse(currPos, playerPos);
 				newPos.x += getSpeed() * Math.cos(theta);

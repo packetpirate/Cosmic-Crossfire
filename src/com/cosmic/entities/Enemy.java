@@ -39,4 +39,5 @@ public abstract class Enemy {
 	public abstract void render(GraphicsContext gc);
 	
 	public static final Image SHIP_DRONE = Tools.LoadImage("enemy_ship1.png");
+	public static final Image SHIP_KAMIK = Tools.LoadImage("enemy_ship2.png");
 }

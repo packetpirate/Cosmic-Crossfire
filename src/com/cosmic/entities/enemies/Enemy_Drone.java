@@ -1,5 +1,6 @@
 package com.cosmic.entities.enemies;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.cosmic.Framework;
@@ -13,6 +14,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.Rotate;
 
 public class Enemy_Drone extends Enemy {
+	public static final double FIRING_DIST = 150.0;
+	
 	public Enemy_Drone(Pair<Double> pos) {
 		super(pos, MovementBehavior.SHIP_DRONE, WeaponBehavior.BASIC_FIRE);
 		image = Enemy.SHIP_DRONE;
@@ -22,7 +25,11 @@ public class Enemy_Drone extends Enemy {
 	public List<Projectile> update(long currentTime, Pair<Double> playerPos) {
 		position = getMovementBehavior().move(getPosition(), playerPos);
 		theta = Framework.getHypotenuse(getPosition(), playerPos);
-		List<Projectile> shots = this.getWeaponBehavior().fire(playerPos, theta, currentTime);
+		List<Projectile> shots = new ArrayList<Projectile>();
+		if(getWeaponBehavior().canFire(currentTime) &&
+		   Framework.inRange(position, playerPos, Enemy_Drone.FIRING_DIST)) {
+			shots = getWeaponBehavior().fire(position, theta, currentTime);
+		}
 		return shots;
 	}
 
