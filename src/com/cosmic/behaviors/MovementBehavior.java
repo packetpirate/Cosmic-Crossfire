@@ -33,8 +33,6 @@ public class MovementBehavior {
 				double theta = Framework.getHypotenuse(currPos, playerPos);
 				newPos.x += getSpeed() * Math.cos(theta);
 				newPos.y += getSpeed() * Math.sin(theta);
-			} else {
-				// Fly around the player.
 			}
 			
 			return newPos;

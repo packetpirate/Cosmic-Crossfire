@@ -1,14 +1,22 @@
 package com.cosmic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.cosmic.entities.Player;
 import com.cosmic.utils.Pair;
+import com.cosmic.utils.Tools;
 
 import javafx.animation.AnimationTimer;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 
 public class Framework {
@@ -20,6 +28,8 @@ public class Framework {
 	private Scene mainScene;
 	
 	private GraphicsContext gc;
+	
+	private List<String> input;
 	
 	private Player player;
 	
@@ -35,6 +45,10 @@ public class Framework {
 		root.getChildren().add(canvas);
 		
 		gc = canvas.getGraphicsContext2D();
+		
+		input = new ArrayList<String>();
+		mainScene.setOnKeyPressed(keyPress);
+		mainScene.setOnKeyReleased(keyRelease);
 		
 		player = new Player();
 		
@@ -52,7 +66,7 @@ public class Framework {
 	}
 	
 	private void update(long currentTime) {
-		
+		player.update(currentTime, input);
 	}
 	
 	private void render() {
@@ -72,4 +86,14 @@ public class Framework {
 	public static double getHypotenuse(Pair<Double> src, Pair<Double> target) {
 		return Math.atan2((target.y - src.y), (target.x - src.x));
 	}
+	
+	EventHandler<KeyEvent> keyPress = key -> {
+		String code = key.getCode().toString();
+		if(!input.contains(code)) input.add(code);
+	};
+	
+	EventHandler<KeyEvent> keyRelease = key -> {
+		String code = key.getCode().toString();
+		input.remove(code);
+	};
 }

@@ -1,5 +1,7 @@
 package com.cosmic.entities;
 
+import java.util.List;
+
 import com.cosmic.Framework;
 import com.cosmic.utils.Pair;
 import com.cosmic.utils.Tools;
@@ -7,11 +9,13 @@ import com.cosmic.utils.Tools;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
 
 public class Player {
 	public static final double SHIP_SIZE = 32;
 	public static final int MAX_HEALTH = 4;
 	public static final int MAX_LIVES = 3;
+	public static final double SPEED = 2.5;
 	private static final boolean SHOW_COLLIDER = false;
 	
 	private int health;
@@ -26,8 +30,10 @@ public class Player {
 	
 	private Pair<Double> position;
 	public Pair<Double> getPosition() { return position; }
+	private double theta;
 	public void move() {
-		
+		position.x += Player.SPEED * Math.cos(theta);
+		position.y += Player.SPEED * Math.sin(theta);
 	}
 	
 	private PowerUps pwrUps;
@@ -45,6 +51,7 @@ public class Player {
 	public void reset(boolean gameOver) {
 		position = new Pair<Double>((double)(Framework.CANVAS_WIDTH / 2), 
 									(double)(Framework.CANVAS_HEIGHT / 2));
+		theta = -(Math.PI / 2);
 		pwrUps = new PowerUps();
 		if(gameOver) {
 			health = Player.MAX_HEALTH;
@@ -52,13 +59,19 @@ public class Player {
 		}
 	}
 	
-	public void update(long currentTime) {
-		
+	public void update(long currentTime, List<String> input) {
+		if(input.contains("W")) move();
+		if(input.contains("A")) theta -= (Math.PI / 45);
+		if(input.contains("D")) theta += (Math.PI / 45);
 	}
 	
 	public void render(GraphicsContext gc) {
 		double x = 0;
 		double y = 0;
+		
+		Rotate r = new Rotate(Math.toDegrees(theta + (Math.PI / 2)), position.x, position.y);
+		gc.save();
+		gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
 		
 		if(image != null) {
 			x = position.x - (image.getWidth() / 2);
@@ -80,5 +93,7 @@ public class Player {
 						  (position.y - (Player.SHIP_SIZE / 2)), 
 						   Player.SHIP_SIZE, Player.SHIP_SIZE);
 		}
+		
+		gc.restore();
 	}
 }
