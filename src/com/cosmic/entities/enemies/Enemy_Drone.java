@@ -13,7 +13,7 @@ public class Enemy_Drone extends Enemy {
 	}
 
 	@Override
-	public void update(long currentTime) {
+	public void update(long currentTime, Pair<Double> playerPos) {
 		
 	}
 

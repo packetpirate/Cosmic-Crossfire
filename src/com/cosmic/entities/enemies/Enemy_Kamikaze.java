@@ -15,7 +15,7 @@ public class Enemy_Kamikaze extends Enemy{
 	}
 
 	@Override
-	public void update(long currentTime) {
+	public void update(long currentTime, Pair<Double> playerPos) {
 		// TODO Auto-generated method stub
 		
 	}
