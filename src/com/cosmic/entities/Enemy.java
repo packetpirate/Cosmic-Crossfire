@@ -1,5 +1,7 @@
 package com.cosmic.entities;
 
+import java.util.List;
+
 import com.cosmic.Framework;
 import com.cosmic.behaviors.MovementBehavior;
 import com.cosmic.behaviors.WeaponBehavior;
@@ -36,7 +38,7 @@ public abstract class Enemy {
 		this.wb = wb;
 	}
 	
-	public abstract void update(long currentTime, Pair<Double> playerPos);
+	public abstract List<Projectile> update(long currentTime, Pair<Double> playerPos);
 	public abstract void render(GraphicsContext gc);
 	
 	public enum Type {
