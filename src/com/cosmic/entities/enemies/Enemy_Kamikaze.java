@@ -21,12 +21,18 @@ public class Enemy_Kamikaze extends Enemy{
 	public List<Projectile> update(long currentTime, Pair<Double> playerPos) {
 		List<Projectile> shots = new ArrayList<Projectile>();
 		
+		getMovementBehavior().move(getPosition(), playerPos);
+		
 		return shots;
 	}
 
 	@Override
 	public void render(GraphicsContext gc) {
-		
+		if(getImage() != null) {
+			double x = getPosition().x - (getImage().getWidth() / 2);
+			double y = getPosition().y - (getImage().getHeight() / 2);
+			gc.drawImage(getImage(), x, y);
+		}
 	}
 
 }
