@@ -1,5 +1,6 @@
 package com.cosmic;
 
+import com.cosmic.entities.Player;
 import com.cosmic.utils.Pair;
 
 import javafx.animation.AnimationTimer;
@@ -20,6 +21,8 @@ public class Framework {
 	
 	private GraphicsContext gc;
 	
+	private Player player;
+	
 	public Framework(Stage stage) {
 		mainStage = stage;
 		mainStage.setResizable(false);
@@ -32,6 +35,8 @@ public class Framework {
 		root.getChildren().add(canvas);
 		
 		gc = canvas.getGraphicsContext2D();
+		
+		player = new Player();
 		
 		final long startTime = System.nanoTime();
 		
@@ -53,6 +58,8 @@ public class Framework {
 	private void render() {
 		gc.setFill(Color.WHITE);
 		gc.fillRect(0, 0, Framework.CANVAS_WIDTH, Framework.CANVAS_HEIGHT);
+		
+		player.render(gc);
 	}
 	
 	public static boolean inRange(Pair<Double> src, Pair<Double> target, double dist) {
