@@ -47,12 +47,12 @@ public abstract class Enemy {
 	public enum Type {
 		DRONE;
 		
-		public Enemy createInstance(Type t, Pair<Double> pos) {
+		public static Enemy createInstance(Type t, Pair<Double> pos) {
 			if(t == Type.DRONE) return new Enemy_Drone(pos);
 			else return null;
 		}
 		
-		public Image getImage(Type t) {
+		public static Image getImage(Type t) {
 			if(t == Type.DRONE) return Enemy.SHIP_DRONE;
 			else return null;
 		}

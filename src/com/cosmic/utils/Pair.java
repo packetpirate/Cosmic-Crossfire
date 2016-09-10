@@ -3,6 +3,10 @@ package com.cosmic.utils;
 public class Pair<T> {
 	public T x, y;
 	
+	public Pair() {
+		
+	}
+	
 	public Pair(T x, T y) {
 		this.x = x;
 		this.y = y;

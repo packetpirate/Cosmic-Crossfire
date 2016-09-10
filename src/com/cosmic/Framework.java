@@ -1,10 +1,13 @@
 package com.cosmic;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import com.cosmic.entities.Enemy;
 import com.cosmic.entities.Player;
+import com.cosmic.entities.enemies.Enemy_Drone;
 import com.cosmic.gfx.Starfield;
 import com.cosmic.utils.Pair;
 
@@ -36,6 +39,8 @@ public class Framework {
 	private Starfield starfield;
 	private Player player;
 	
+	private List<Enemy> enemies;
+	
 	public Framework(Stage stage) {
 		mainStage = stage;
 		mainStage.setResizable(false);
@@ -59,6 +64,8 @@ public class Framework {
 		
 		starfield = new Starfield();
 		player = new Player();
+		
+		enemies = new ArrayList<Enemy>();
 		
 		final long startTime = System.nanoTime();
 		
@@ -84,6 +91,13 @@ public class Framework {
 		gc.fillRect(0, 0, Framework.CANVAS_WIDTH, Framework.CANVAS_HEIGHT);
 		
 		starfield.render(gc);
+		
+		Iterator<Enemy> it = enemies.iterator();
+		while(it.hasNext()) {
+			Enemy e = it.next();
+			e.render(gc);
+		}
+		
 		player.render(gc);
 	}
 	
