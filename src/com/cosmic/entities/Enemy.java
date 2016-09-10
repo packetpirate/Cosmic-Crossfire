@@ -1,6 +1,8 @@
 package com.cosmic.entities;
 
+import com.cosmic.Framework;
 import com.cosmic.behaviors.MovementBehavior;
+import com.cosmic.behaviors.WeaponBehavior;
 import com.cosmic.utils.Pair;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -10,7 +12,12 @@ public class Enemy {
 	public Pair<Double> getPosition() { return position; }
 	
 	private MovementBehavior mb;
+	public MovementBehavior getMovementBehavior() { return mb; }
 	public void move(Pair<Double> playerPos) { mb.move(position, playerPos); }
+	
+	private WeaponBehavior wb;
+	public WeaponBehavior getWeaponBehavior() { return wb; }
+	public void fire(Pair<Double> playerPos) { wb.fire(position, Framework.getHypotenuse(position, playerPos)); }
 	
 	public Enemy(double x, double y) { // Number One
 		this(x, y, MovementBehavior.SHIP_DRONE);
