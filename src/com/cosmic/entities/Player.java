@@ -35,15 +35,16 @@ public class Player {
 	
 	private int lives;
 	public int getLives() { return lives; }
-	public void die() {
-		if(!isInvincible()) {
+	public void die(long currentTime) {
+		if(!isInvincible(currentTime)) {
 			lives--;
+			pwrUps.addPowerUp(PowerUps.Type.INVINCIBLE, currentTime);
 			reset(gameOver());
 		}
 	}
 	public boolean gameOver() { return (lives == 0); }
-	public boolean isInvincible() {
-		return false;
+	public boolean isInvincible(long currentTime) {
+		return pwrUps.isActive(PowerUps.Type.INVINCIBLE, currentTime);
 	}
 	
 	private Pair<Double> position;
@@ -54,7 +55,7 @@ public class Player {
 		position.y += Player.SPEED * Math.sin(theta);
 	}
 	public boolean collision(Pair<Double> pos) {
-		return Framework.inRange(pos, position, Player.SHIP_SIZE);
+		return Framework.inRange(pos, position, (Player.SHIP_SIZE / 2));
 	}
 	
 	public boolean collision(Enemy e) {
@@ -94,6 +95,8 @@ public class Player {
 		if(input.contains("W")) move();
 		if(input.contains("A")) theta -= (Math.PI / 45);
 		if(input.contains("D")) theta += (Math.PI / 45);
+		
+		pwrUps.update(currentTime);
 	}
 	
 	public void render(GraphicsContext gc) {

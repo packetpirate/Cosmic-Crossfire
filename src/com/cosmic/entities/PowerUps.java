@@ -6,52 +6,36 @@
 package com.cosmic.entities;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class PowerUps {
-	/*********************/
-	/***** Variables *****/
-	/*********************/
-	// The key of the map of power ups
 	public enum Type {
-		// TODO: add times for powerUps
 		PROT_SHIELD(5000),
 		REFL_SHIELD(3000),
-		TRAC_SHIELD(0),
-		PHAS_SHIELD(0),
-		SPEED_BOOST(0),
+		PHAS_SHIELD(5000),
+		SPEED_BOOST(5000),
 		SHIP_REPAIR(0),
-		SHOT_DISPLC(0);
+		SHOT_DISPLC(0),
+		INVINCIBLE(2000);
 		
 		private long duration, startTime;
 		
-		// when each "Type" is created, makes the duration equal
-		// to how long the powerUp should last
 		private Type(long d) {
 			this.duration = d;
+			this.startTime = 0;
 		}
 		
-		// If the powerUp has been activated, startTime will be
-		// initiated at the currentTime of the program
 		public void start(long currentTime){
 			this.startTime = currentTime;
 		}
-		// duration is private so this is needed so that other
-		// functions can retrieve the duration if needed
+		
 		public long getDuration() { return duration; }
 	}
 	
-	// Type references the powerUp name and duration
-	// Booleans determine if the player has the power up
 	private Map<Type, Boolean> powerUps;
 	
-	/*********************/
-	/***** Functions *****/
-	/*********************/
-	
-	// Constructor
-	// Fills the map with the powerUps and sets the values to false
-	// because the player does not initially have any powerUps
 	public PowerUps() {
 		powerUps = new HashMap<>();
 		for(Type t : Type.values()) {
@@ -59,24 +43,41 @@ public class PowerUps {
 		}
 	}
 	
-	// Turns the powerUp "on"
 	public void addPowerUp(Type t, long currentTime){
+		System.out.println("Player gained: " + t.toString());
 		powerUps.put(t, true);
 		t.start(currentTime);
 	}
 	
-	// Checks to see if the player currently has 
-	// the powerUp in question
-	public boolean isActive(Type t, long currentTime) {
-		final long timeDiff = currentTime - t.startTime;
-		
-		if(timeDiff >= t.duration)
-			return false;
-		else
-			return true;
+	public void update(long currentTime) {
+		// Check for expired power-ups.
+		Iterator<Entry<Type, Boolean>> it = powerUps.entrySet().iterator();
+		while(it.hasNext()) {
+			Entry<Type, Boolean> entry = it.next();
+			if(entry.getValue()) {
+				System.out.println(entry.getKey().toString() + " set to true!");
+				if(!isActive(entry.getKey(), currentTime)) {
+					System.out.println("Expired: " + entry.getKey().toString());
+					remPowerUp(entry.getKey());
+				}
+			}
+		}
 	}
 	
-	// Turns the powerUp "off"
+	public boolean isActive(Type t, long currentTime) {
+		if(powerUps.get(t) == Boolean.FALSE) return false;
+		System.out.println(t.toString() + " set to true!");
+		final long timeDiff = currentTime - t.startTime;
+		
+		if(timeDiff >= t.duration) {
+			System.out.println(t.toString() + "\'s time is up!");
+			return false;
+		} else {
+			System.out.println(t.toString() + " is still active!");
+			return true;
+		}
+	}
+	
 	public void remPowerUp(Type t) {
 		powerUps.put(t, false);
 	}

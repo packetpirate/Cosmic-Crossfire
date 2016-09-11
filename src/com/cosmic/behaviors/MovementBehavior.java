@@ -93,7 +93,7 @@ public class MovementBehavior {
 						newPos.y = currPos.y;
 					} else changeState(1);
 				}
-				// TODO: Refine this so transition from fly-in and orbit isn't jittery.
+				
 				if(getState() == 1) {
 					if(getStartTime() == Long.MAX_VALUE) setStartTime(currentTime);
 					

@@ -70,5 +70,12 @@ public abstract class Enemy {
 			
 			return e;
 		}
+		
+		public static Type randomType(Pair<Double> pos) {
+			int r = Framework.rand.nextInt(2);
+			if(r == 0) return DRONE;
+			else if(r == 1) return KAMIKAZE;
+			else return DRONE;
+		}
 	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.cosmic.behaviors.Formation;
 import com.cosmic.behaviors.MovementBehavior;
+import com.cosmic.behaviors.WBGenerator;
 import com.cosmic.behaviors.WeaponBehavior;
 import com.cosmic.entities.Enemy;
 import com.cosmic.entities.Player;
@@ -18,7 +19,16 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class LevelController {
 	private int level;
+	private int levelKills;
+	private int levelGoal;
 	public int getLevel() { return level; }
+	public int getLevelKills() { return levelKills; }
+	public int getLevelGoal() { return levelGoal; }
+	public boolean wavesComplete() { return (levelKills >= levelGoal); }
+	public void levelUp() {
+		reset();
+		level++;
+	}
 	
 	private Starfield starfield;
 	public Starfield getStarfield() { return starfield; }
@@ -36,14 +46,18 @@ public class LevelController {
 	}
 	
 	public LevelController(long startTime) {
+		level = 1;
+		levelKills = 0;
+		levelGoal = 0;
+		
 		starfield = new Starfield();
 		enemies = new ArrayList<Enemy>();
 		projectiles = new ArrayList<Projectile>();
 		formations = new ArrayList<Formation>();
 		
-		formations.add(new Formation(Enemy.Type.DRONE, new Pair<Double>((Framework.CANVAS_WIDTH + 32.0), 32.0), 
-									() -> MovementBehavior.FORM_ORBIT(), () -> WeaponBehavior.BASIC_FIRE(true), 
-									(startTime / Framework.NANO_TO_MS), 1500L, 4));
+//		formations.add(new Formation(Enemy.Type.DRONE, new Pair<Double>((Framework.CANVAS_WIDTH + 32.0), 32.0), 
+//									() -> MovementBehavior.FORM_ORBIT(), () -> WeaponBehavior.SHOTG_FIRE(true), 
+//									(startTime / Framework.NANO_TO_MS), 1500L, 4));
 	}
 	
 	private void reset() {
@@ -57,9 +71,11 @@ public class LevelController {
 		// Update the starfield animation.
 		starfield.update(currentTime);
 		
+		if(enemies.isEmpty()) createWave(currentTime, player, 10);
+		
 		// Check collisions between game objects.
-		checkProjectileCollisions(player);
-		checkShipCollisions(player);
+		checkProjectileCollisions(player, currentTime);
+		checkShipCollisions(player, currentTime);
 		
 		// Update enemies and add their projectiles to the projectile list.
 		Iterator<Enemy> eit = enemies.iterator();
@@ -80,12 +96,12 @@ public class LevelController {
 		Iterator<Formation> fit = formations.iterator();
 		while(fit.hasNext()) {
 			Formation f = fit.next();
-			if(!f.onCooldown(currentTime)) enemies.addAll(f.produce(currentTime));
+			if(!f.onCooldown(currentTime) && (f.equals(formations.get(0)))) enemies.addAll(f.produce(currentTime));
 			if(f.isFinished()) fit.remove();
 		}
 	}
 	
-	private void checkProjectileCollisions(Player player) {
+	private void checkProjectileCollisions(Player player, long currentTime) {
 		// Check projectiles for collisions.
 		Iterator<Projectile> pit = projectiles.iterator();
 		Iterator<Enemy> eit = enemies.iterator();
@@ -98,7 +114,7 @@ public class LevelController {
 			} else if(player.collision(p.getPosition())) {
 				// The projectile has collided with the player. Destroy it and kill the player.
 				pit.remove();
-				player.die();
+				player.die(currentTime);
 				if(player.gameOver()) reset();
 				continue;
 			}
@@ -117,7 +133,7 @@ public class LevelController {
 		}
 	}
 	
-	private void checkShipCollisions(Player player) {
+	private void checkShipCollisions(Player player, long currentTime) {
 		// Check ship-to-ship collisions.
 		for(int i = 0; i < enemies.size(); i++) {
 			Enemy ei = enemies.get(i);
@@ -135,7 +151,7 @@ public class LevelController {
 			// Also check for collision with the player.
 			if(player.isAlive() && player.collision(ei)) {
 				ei.collide();
-				player.die();
+				player.die(currentTime);
 				if(player.gameOver()) reset();
 			}
 		}
@@ -145,6 +161,26 @@ public class LevelController {
 		while(it.hasNext()) {
 			Enemy e = it.next();
 			if(e.isColliding()) it.remove();
+		}
+	}
+	
+	private void createWave(long currentTime, Player player, int amount) {
+		while(amount > 0) {
+			int howMany = Framework.rand.nextInt(amount) + 1;
+			Pair<Double> spawn = new Pair<Double>((Framework.CANVAS_WIDTH + 32.0), 32.0);
+			
+			int rwb = Framework.rand.nextInt(3);
+			WBGenerator wb = () -> {
+				if(rwb == 1) return WeaponBehavior.RAPID_FIRE(true);
+				else if(rwb == 2) return WeaponBehavior.SHOTG_FIRE(true);
+				else return WeaponBehavior.BASIC_FIRE(true);
+			};
+			
+			formations.add(new Formation(Enemy.Type.randomType(spawn), spawn, 
+										 () -> MovementBehavior.FORM_ORBIT(), wb, 
+										 currentTime, (6000L / howMany), howMany));
+			
+			amount -= howMany;
 		}
 	}
 	
