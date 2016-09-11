@@ -8,9 +8,13 @@ import com.cosmic.utils.Pair;
 public class MovementBehavior {
 	private double speed;
 	public double getSpeed() { return speed; }
+	private long startTime;
+	public long getStartTime() { return startTime; }
+	public void setStartTime(long start) { this.startTime = start; }
 	
 	public MovementBehavior(double speed) {
 		this.speed = speed;
+		this.startTime = Long.MAX_VALUE;
 	}
 	
 	/**
@@ -18,7 +22,7 @@ public class MovementBehavior {
 	 * @param currPos The current position of the enemy ship.
 	 * @return The new position of the enemy ship after applying the movement behavior.
 	 */
-	public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, double deltaTime) {
+	public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, long currentTime) {
 		// Must be overridden.
 		return null;
 	}
@@ -28,7 +32,7 @@ public class MovementBehavior {
 	
 	public static final MovementBehavior SHIP_DRONE = new MovementBehavior(2.0) {
 		@Override
-		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, double deltaTime) {
+		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, long currentTime) {
 			Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
 			
 			if(!Framework.inRange(currPos, playerPos, Enemy_Drone.FIRING_DIST)) {
@@ -45,7 +49,7 @@ public class MovementBehavior {
 	public static final MovementBehavior SHIP_KAMIK = new MovementBehavior(2.0) {
 
 		@Override
-		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, double deltaTime) {
+		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, long currentTime) {
 			Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
 			if(currPos != playerPos) {
 				// Move closer to the player.
@@ -65,15 +69,23 @@ public class MovementBehavior {
 	// PRE-DEFINED FORMATION BEHAVIORS START
 	
 	public static final MovementBehavior FORM_ORBIT = new MovementBehavior(2.5) {
+		private long startTime;
+		{ // Pseudo-Constructor
+			
+		}
+		
 		@Override
-		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, double deltaTime) {
+		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, long currentTime) {
 			Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
 			
+			if(startTime == Long.MAX_VALUE) startTime = currentTime;
+			
+			double t = (currentTime - startTime) / 1000.0;
 			double r = (Framework.CANVAS_WIDTH / 2) - Player.SHIP_SIZE;
 			double cX = (Framework.CANVAS_WIDTH / 2);
 			double cY = (Framework.CANVAS_HEIGHT / 2);
-			newPos.x = cX + (r * Math.cos(Framework.getHypotenuse(currPos, new Pair<Double>(cX, cY)) + (Math.PI / 90)));
-			newPos.y = cY + (r * Math.sin(deltaTime * Framework.getHypotenuse(currPos, new Pair<Double>(cX, cY)) + (Math.PI / 90)));
+			newPos.x = cX + (r * Math.cos(t % (Math.PI * 2)));
+			newPos.y = cY + (r * Math.sin(t % (Math.PI * 2)));
 			
 			return newPos;
 		}

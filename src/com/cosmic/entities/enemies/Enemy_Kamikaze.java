@@ -22,9 +22,9 @@ public class Enemy_Kamikaze extends Enemy{
 	}
 
 	@Override
-	public List<Projectile> update(long currentTime, double deltaTime, Pair<Double> playerPos) {
+	public List<Projectile> update(long currentTime, Pair<Double> playerPos) {
 		List<Projectile> shots = new ArrayList<Projectile>();
-		position = getMovementBehavior().move(getPosition(), playerPos, deltaTime);
+		position = getMovementBehavior().move(getPosition(), playerPos, currentTime);
 		theta = Framework.getHypotenuse(getPosition(), playerPos);
 		return shots;
 	}

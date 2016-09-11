@@ -25,8 +25,8 @@ public class Enemy_Drone extends Enemy {
 	}
 
 	@Override
-	public List<Projectile> update(long currentTime, double deltaTime, Pair<Double> playerPos) {
-		position = getMovementBehavior().move(getPosition(), playerPos, deltaTime);
+	public List<Projectile> update(long currentTime, Pair<Double> playerPos) {
+		position = getMovementBehavior().move(getPosition(), playerPos, currentTime);
 		theta = Framework.getHypotenuse(getPosition(), playerPos);
 		List<Projectile> shots = new ArrayList<Projectile>();
 		if(getWeaponBehavior().canFire(currentTime) &&

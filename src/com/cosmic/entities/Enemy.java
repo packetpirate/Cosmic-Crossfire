@@ -33,7 +33,7 @@ public abstract class Enemy {
 	private MovementBehavior mb;
 	public MovementBehavior getMovementBehavior() { return mb; }
 	public void overrideMovementBehavior(MovementBehavior mb) { this.mb = mb; }
-	public void move(Pair<Double> playerPos, double deltaTime) { mb.move(position, playerPos, deltaTime); }
+	public void move(Pair<Double> playerPos, long currentTime) { mb.move(position, playerPos, currentTime); }
 	
 	private WeaponBehavior wb;
 	public WeaponBehavior getWeaponBehavior() { return wb; }
@@ -53,7 +53,7 @@ public abstract class Enemy {
 		this.wb = wb;
 	}
 	
-	public abstract List<Projectile> update(long currentTime, double deltaTime, Pair<Double> playerPos);
+	public abstract List<Projectile> update(long currentTime, Pair<Double> playerPos);
 	public abstract void render(GraphicsContext gc);
 	
 	public static final Image SHIP_DRONE = Tools.LoadImage("enemy_ship1.png");

@@ -114,7 +114,7 @@ public class Framework {
 		Iterator<Enemy> eit = enemies.iterator();
 		while(eit.hasNext()) {
 			Enemy e = eit.next();
-			List<Projectile> shots = e.update(currentTime, deltaTime, player.getPosition());
+			List<Projectile> shots = e.update(currentTime, player.getPosition());
 			projectiles.addAll(shots);
 		}
 		
