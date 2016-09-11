@@ -44,7 +44,6 @@ public class PowerUps {
 	}
 	
 	public void addPowerUp(Type t, long currentTime){
-		System.out.println("Player gained: " + t.toString());
 		powerUps.put(t, true);
 		t.start(currentTime);
 	}
@@ -54,26 +53,18 @@ public class PowerUps {
 		Iterator<Entry<Type, Boolean>> it = powerUps.entrySet().iterator();
 		while(it.hasNext()) {
 			Entry<Type, Boolean> entry = it.next();
-			if(entry.getValue()) {
-				System.out.println(entry.getKey().toString() + " set to true!");
-				if(!isActive(entry.getKey(), currentTime)) {
-					System.out.println("Expired: " + entry.getKey().toString());
+			if(entry.getValue() && !isActive(entry.getKey(), currentTime)) {
 					remPowerUp(entry.getKey());
-				}
 			}
 		}
 	}
 	
 	public boolean isActive(Type t, long currentTime) {
 		if(powerUps.get(t) == Boolean.FALSE) return false;
-		System.out.println(t.toString() + " set to true!");
 		final long timeDiff = currentTime - t.startTime;
-		
 		if(timeDiff >= t.duration) {
-			System.out.println(t.toString() + "\'s time is up!");
 			return false;
 		} else {
-			System.out.println(t.toString() + " is still active!");
 			return true;
 		}
 	}

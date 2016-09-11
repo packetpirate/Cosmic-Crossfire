@@ -115,49 +115,5 @@ public class MovementBehavior {
 		};
 	}
 	
-	/*public static final MovementBehavior FORM_ORBIT = new MovementBehavior(2.5) {
-		@Override
-		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, long currentTime) {
-			Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
-			
-			if(getState() == 0) {
-				if(currPos.x > (Framework.CANVAS_WIDTH / 2)) {
-					newPos.x = currPos.x - getSpeed();
-					newPos.y = currPos.y;
-				} else changeState(1);
-			}
-			// TODO: Refine this so transition from fly-in and orbit isn't jittery.
-			if(getState() == 1) {
-				if(getStartTime() == Long.MAX_VALUE) setStartTime(currentTime);
-				
-				double t = (currentTime - getStartTime()) / 1000.0;
-				double r = (Framework.CANVAS_WIDTH / 2) - Player.SHIP_SIZE;
-				double cX = (Framework.CANVAS_WIDTH / 2);
-				double cY = (Framework.CANVAS_HEIGHT / 2);
-				newPos.x = cX + (r * Math.cos((-t - Math.PI / 2) % (Math.PI * 2)));
-				newPos.y = cY + (r * Math.sin((-t - Math.PI / 2) % (Math.PI * 2)));
-			}
-			
-			return newPos;
-		}
-		
-		@Override
-		public double getHeading(Pair<Double> oldPos, Pair<Double> newPos, Pair<Double> playerPos) {
-			return Framework.getHypotenuse(oldPos, newPos);
-		}
-	};*/
-	
-	// MOVEMENT BEHAVIOR SKELETON HERE
-	/*
-	 * public static final MovementBehavior MOVE_NAME = new MovementBehavior(double moveSpeed) {
-		   @Override
-		   public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos) {
-			   Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
-			
-			   return newPos;
-		   }
-	   };
-	 */
-	
 	// PRE-DEFINED FORMATION BEHAVIORS END
 }
