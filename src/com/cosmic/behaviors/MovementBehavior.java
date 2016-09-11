@@ -40,37 +40,40 @@ public class MovementBehavior {
 	// =========================================
 	// PRE-DEFINED MOVEMENT BEHAVIORS START HERE
 	
-	public static final MovementBehavior SHIP_DRONE = new MovementBehavior(2.0) {
-		@Override
-		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, long currentTime) {
-			Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
-			
-			if(!Framework.inRange(currPos, playerPos, Enemy_Drone.FIRING_DIST)) {
-				// Move closer to the player.
-				double theta = Framework.getHypotenuse(currPos, playerPos);
-				newPos.x += getSpeed() * Math.cos(theta);
-				newPos.y += getSpeed() * Math.sin(theta);
-			}
-			
-			return newPos;
-		}
-	};
-	
-	public static final MovementBehavior SHIP_KAMIK = new MovementBehavior(2.0) {
-
-		@Override
-		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, long currentTime) {
-			Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
-			if(currPos != playerPos) {
-				// Move closer to the player.
-				double theta = Framework.getHypotenuse(currPos, playerPos);
-				newPos.x += getSpeed() * Math.cos(theta);
-				newPos.y += getSpeed() * Math.sin(theta);
+	public static final MovementBehavior SHIP_DRONE() {
+		return new MovementBehavior(2.0) {
+			@Override
+			public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, long currentTime) {
+				Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
+				
+				if(!Framework.inRange(currPos, playerPos, Enemy_Drone.FIRING_DIST)) {
+					// Move closer to the player.
+					double theta = Framework.getHypotenuse(currPos, playerPos);
+					newPos.x += getSpeed() * Math.cos(theta);
+					newPos.y += getSpeed() * Math.sin(theta);
 				}
-			
-			return newPos;
-		}
-	};
+				
+				return newPos;
+			}
+		};
+	}
+	
+	public static final MovementBehavior SHIP_KAMIK() {
+		return new MovementBehavior(2.0) {
+			@Override
+			public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, long currentTime) {
+				Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
+				if(currPos != playerPos) {
+					// Move closer to the player.
+					double theta = Framework.getHypotenuse(currPos, playerPos);
+					newPos.x += getSpeed() * Math.cos(theta);
+					newPos.y += getSpeed() * Math.sin(theta);
+					}
+				
+				return newPos;
+			}
+		};
+	}
 	
 	// TODO: More movement behaviors!
 	

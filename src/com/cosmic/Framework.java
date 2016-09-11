@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Random;
 
 import com.cosmic.behaviors.Formation;
+import com.cosmic.behaviors.MovementBehavior;
+import com.cosmic.behaviors.WeaponBehavior;
 import com.cosmic.entities.Enemy;
 import com.cosmic.entities.Player;
 import com.cosmic.entities.Projectile;
@@ -76,7 +78,9 @@ public class Framework {
 		
 		final long startTime = System.nanoTime();
 		
-		//form1 = new Formation(Enemy.Type.KAMIKAZE, new Pair<Double>((Framework.CANVAS_WIDTH + 32.0), 32.0), () -> MovementBehavior.FORM_ORBIT(), null, (startTime / Framework.NANO_TO_MS), 1500);
+		formations.add(new Formation(Enemy.Type.DRONE, new Pair<Double>((Framework.CANVAS_WIDTH + 32.0), 32.0), 
+									() -> MovementBehavior.FORM_ORBIT(), () -> WeaponBehavior.RAPID_FIRE(true), 
+									(startTime / Framework.NANO_TO_MS), 1500L));
 		
 		new AnimationTimer() {
 			@Override
@@ -160,7 +164,7 @@ public class Framework {
 				Enemy ej = enemies.get(j);
 				double dist = Framework.distance(ei.getPosition(), ej.getPosition());
 				if(!(enemies.get(i).equals(enemies.get(j))) && 
-					(dist <= (ei.getShipSize() + ej.getShipSize()))) {
+					(dist <= ((ei.getShipSize() / 2) + (ej.getShipSize() / 2)))) {
 					// Collision detected between these two enemies.
 					ei.collide();
 					ej.collide();
@@ -173,6 +177,12 @@ public class Framework {
 				player.die();
 				if(player.gameOver()) reset();
 			}
+		}
+		
+		Iterator<Enemy> it = enemies.iterator();
+		while(it.hasNext()) {
+			Enemy e = it.next();
+			if(e.isColliding()) it.remove();
 		}
 	}
 	

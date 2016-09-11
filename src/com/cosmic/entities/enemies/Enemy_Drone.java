@@ -17,24 +17,22 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 
 public class Enemy_Drone extends Enemy {
-	public static final double FIRING_DIST = 150.0;
+	public static final double FIRING_DIST = 250.0;
 	
 	public Enemy_Drone(Pair<Double> pos) {
-		super(IDGenerator.createID(), pos, MovementBehavior.SHIP_DRONE, WeaponBehavior.BASIC_FIRE);
+		super(IDGenerator.createID(), pos, MovementBehavior.SHIP_DRONE(), WeaponBehavior.BASIC_FIRE(false));
 		image = Enemy.SHIP_DRONE;
 	}
 
 	@Override
 	public List<Projectile> update(long currentTime, Pair<Double> playerPos) {
-		//position = getMovementBehavior().move(getPosition(), playerPos, currentTime);
-		//theta = getMovementBehavior().getHeading(getPosition(), playerPos);
 		Pair<Double> newPos = getMovementBehavior().move(getPosition(), playerPos, currentTime);
 		theta = getMovementBehavior().getHeading(position, newPos, playerPos);
 		position = newPos;
 		List<Projectile> shots = new ArrayList<Projectile>();
 		if(getWeaponBehavior().canFire(currentTime) &&
-		   Framework.inRange(position, playerPos, Enemy_Drone.FIRING_DIST)) {
-			shots = getWeaponBehavior().fire(id, position, theta, currentTime);
+		   getWeaponBehavior().inRange(Framework.distance(getPosition(), playerPos))) {
+			shots = getWeaponBehavior().fire(id, position, playerPos, theta, currentTime);
 		}
 		return shots;
 	}

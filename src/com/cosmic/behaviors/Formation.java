@@ -24,7 +24,7 @@ public class Formation {
 		this.lastUpdate = currentTime;
 		this.cooldown = cooldown;
 	}
-	
+
 	public boolean onCooldown(long currentTime) {
 		return ((currentTime - lastUpdate) < cooldown);
 	}

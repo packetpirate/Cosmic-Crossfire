@@ -39,7 +39,7 @@ public abstract class Enemy {
 	public WeaponBehavior getWeaponBehavior() { return wb; }
 	public void overrideWeaponBehavior(WeaponBehavior wb) { this.wb = wb; }
 	public void fire(Pair<Double> playerPos, long currentTime) { 
-		wb.fire(id, position, Framework.getHypotenuse(position, playerPos), currentTime); 
+		wb.fire(id, position, playerPos, Framework.getHypotenuse(position, playerPos), currentTime); 
 	}
 	
 	protected Image image;

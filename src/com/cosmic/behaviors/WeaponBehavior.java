@@ -8,10 +8,16 @@ import com.cosmic.entities.Projectile;
 import com.cosmic.utils.Pair;
 
 public class WeaponBehavior {
+	private double range;
+	public boolean inRange(double dist) { return (dist <= range); }
+	private boolean targeted;
+	public boolean isTargeted() { return targeted; }
 	private long cooldown;
 	private long lastFired;
 	
-	public WeaponBehavior(long cooldown) {
+	public WeaponBehavior(double range, boolean targeted, long cooldown) {
+		this.range = range;
+		this.targeted = targeted;
 		this.cooldown = cooldown;
 		this.lastFired = 0;
 	}
@@ -22,7 +28,7 @@ public class WeaponBehavior {
 	 * @param theta The direction for the projectile to move in.
 	 * @return A projectile representing the one fired from the enemy weapon.
 	 */
-	public List<Projectile> fire(int id, Pair<Double> pos, double theta, long currentTime) {
+	public List<Projectile> fire(int id, Pair<Double> pos, Pair<Double> playerPos, double theta, long currentTime) {
 		return null;
 	}
 	
@@ -36,42 +42,51 @@ public class WeaponBehavior {
 	
 	// PRE-DEFINED WEAPON BEHAVIORS START
 	
-	public static final WeaponBehavior BASIC_FIRE = new WeaponBehavior(1000) {
-		@Override
-		public List<Projectile> fire(int id, Pair<Double> pos, double theta, long currentTime) {
-			recharge(currentTime);
-			Projectile p = new Projectile(id, pos, theta, 5.0, 4.0);
-			List<Projectile> shots = new ArrayList<Projectile>();
-			shots.add(p);
-			return shots;
-		}
-	};
-	
-	public static final WeaponBehavior RAPID_FIRE = new WeaponBehavior(500) {
-		@Override
-		public List<Projectile> fire(int id, Pair<Double> pos, double theta, long currentTime) {
-			recharge(currentTime);
-			Projectile p = new Projectile(id, pos, theta, 5.0, 4.0);
-			List<Projectile> shots = new ArrayList<Projectile>();
-			shots.add(p);
-			return shots;
-		}
-	};
-	
-	public static final WeaponBehavior SHOTG_FIRE = new WeaponBehavior(2000) {
-		@Override
-		public List<Projectile> fire(int id, Pair<Double> pos, double theta, long currentTime) {
-			recharge(currentTime);
-			List<Projectile> shots = new ArrayList<Projectile>();
-			for(int i = 0; i < 5; i++) {
-				double th = (theta - 20.0) + (Framework.rand.nextDouble() * 40.0);
-				Projectile p = new Projectile(id, pos, th, 5.0, 5.0);
+	public static final WeaponBehavior BASIC_FIRE(boolean targeted) {
+		return new WeaponBehavior(250.0, targeted, 1000) {
+			@Override
+			public List<Projectile> fire(int id, Pair<Double> pos, Pair<Double> playerPos, double theta, long currentTime) {
+				recharge(currentTime);
+				if(isTargeted()) theta = Framework.getHypotenuse(pos, playerPos);
+				Projectile p = new Projectile(id, pos, theta, 5.0, 4.0);
+				List<Projectile> shots = new ArrayList<Projectile>();
 				shots.add(p);
+				return shots;
 			}
-			
-			return shots;
-		}
-	};
+		};
+	}
+	
+	public static final WeaponBehavior RAPID_FIRE(boolean targeted) {
+		return new WeaponBehavior(400.0, targeted, 500) {
+			@Override
+			public List<Projectile> fire(int id, Pair<Double> pos, Pair<Double> playerPos, double theta, long currentTime) {
+				recharge(currentTime);
+				if(isTargeted()) theta = Framework.getHypotenuse(pos, playerPos);
+				Projectile p = new Projectile(id, pos, theta, 5.0, 4.0);
+				List<Projectile> shots = new ArrayList<Projectile>();
+				shots.add(p);
+				return shots;
+			}
+		};
+	}
+	
+	public static final WeaponBehavior SHOTG_FIRE(boolean targeted) {
+		return new WeaponBehavior(300.0, targeted, 2000) {
+			@Override
+			public List<Projectile> fire(int id, Pair<Double> pos, Pair<Double> playerPos, double theta, long currentTime) {
+				recharge(currentTime);
+				List<Projectile> shots = new ArrayList<Projectile>();
+				if(isTargeted()) theta = Framework.getHypotenuse(pos, playerPos);
+				for(int i = 0; i < 5; i++) {
+					double th = (theta - (Math.PI / 9)) + (Framework.rand.nextDouble() * (Math.PI / 4.5));
+					Projectile p = new Projectile(id, pos, th, 5.0, 5.0);
+					shots.add(p);
+				}
+				
+				return shots;
+			}
+		};
+	}
 	
 	// PRE-DEFINED WEAPON BEHAVIORS END
 }
