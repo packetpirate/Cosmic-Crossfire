@@ -1,18 +1,10 @@
 package com.cosmic;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import com.cosmic.behaviors.Formation;
-import com.cosmic.behaviors.MovementBehavior;
-import com.cosmic.behaviors.WeaponBehavior;
-import com.cosmic.entities.Enemy;
 import com.cosmic.entities.Player;
-import com.cosmic.entities.Projectile;
-import com.cosmic.gfx.Starfield;
-import com.cosmic.utils.IDGenerator;
 import com.cosmic.utils.Pair;
 
 import javafx.animation.AnimationTimer;
@@ -40,13 +32,8 @@ public class Framework {
 	
 	private List<String> input;
 	
-	private Starfield starfield;
 	private Player player;
-	
-	private List<Enemy> enemies;
-	private List<Projectile> projectiles;
-	
-	private List<Formation> formations;
+	private LevelController lc;
 	
 	public Framework(Stage stage) {
 		mainStage = stage;
@@ -69,18 +56,10 @@ public class Framework {
 		mainScene.setOnKeyPressed(keyPress);
 		mainScene.setOnKeyReleased(keyRelease);
 		
-		starfield = new Starfield();
-		player = new Player();
-		
-		enemies = new ArrayList<Enemy>();
-		projectiles = new ArrayList<Projectile>();
-		formations = new ArrayList<Formation>();
-		
 		final long startTime = System.nanoTime();
 		
-		formations.add(new Formation(Enemy.Type.DRONE, new Pair<Double>((Framework.CANVAS_WIDTH + 32.0), 32.0), 
-									() -> MovementBehavior.FORM_ORBIT(), () -> WeaponBehavior.RAPID_FIRE(true), 
-									(startTime / Framework.NANO_TO_MS), 1500L));
+		player = new Player();
+		lc = new LevelController(startTime);
 		
 		new AnimationTimer() {
 			@Override
@@ -94,116 +73,23 @@ public class Framework {
 		mainStage.show();
 	}
 	
-	private void reset() {
-		enemies.clear();
-		projectiles.clear();
-		IDGenerator.resetID();
-	}
+	
 	
 	private void update(long currentTime) {
-		starfield.update(currentTime);
-		
-		checkProjectileCollisions();
-		checkShipCollisions();
-		
 		player.update(currentTime, input);
-		
-		Iterator<Enemy> eit = enemies.iterator();
-		while(eit.hasNext()) {
-			Enemy e = eit.next();
-			List<Projectile> shots = e.update(currentTime, player.getPosition());
-			projectiles.addAll(shots);
-		}
-		
-		Iterator<Projectile> pit = projectiles.iterator();
-		while(pit.hasNext()) {
-			Projectile p = pit.next();
-			p.update();
-		}
-		
-		// 
-		Iterator<Formation> fit = formations.iterator();
-		while(fit.hasNext()) {
-			Formation f = fit.next();
-			if(!f.onCooldown(currentTime)) enemies.addAll(f.produce(currentTime));
-		}
+		lc.update(currentTime, player);
 	}
 	
-	private void checkProjectileCollisions() {
-		// Check projectiles for collisions.
-		Iterator<Projectile> pit = projectiles.iterator();
-		Iterator<Enemy> eit = enemies.iterator();
-		while(pit.hasNext()) {
-			Projectile p = pit.next();
-			if(!inBounds(p.getPosition().x, p.getPosition().y)) {
-				pit.remove();
-				continue;
-			} else if(player.collision(p.getPosition())) {
-				pit.remove();
-				player.die();
-				if(player.gameOver()) reset();
-				continue;
-			}
-			
-			while(eit.hasNext()) {
-				Enemy e = eit.next();
-				if(e.collision(p.getPosition()) && !e.isParent(p.getID())) {
-					eit.remove();
-					pit.remove();
-					break;
-				}
-			}
-		}
-	}
 	
-	private void checkShipCollisions() {
-		// Check ship-to-ship collisions.
-		for(int i = 0; i < enemies.size(); i++) {
-			Enemy ei = enemies.get(i);
-			for(int j = (i + 1); j < enemies.size(); j++) {
-				Enemy ej = enemies.get(j);
-				double dist = Framework.distance(ei.getPosition(), ej.getPosition());
-				if(!(enemies.get(i).equals(enemies.get(j))) && 
-					(dist <= ((ei.getShipSize() / 2) + (ej.getShipSize() / 2)))) {
-					// Collision detected between these two enemies.
-					ei.collide();
-					ej.collide();
-				}
-			}
-			
-			// Also check for collision with the player.
-			if(player.isAlive() && player.collision(ei)) {
-				ei.collide();
-				player.die();
-				if(player.gameOver()) reset();
-			}
-		}
-		
-		Iterator<Enemy> it = enemies.iterator();
-		while(it.hasNext()) {
-			Enemy e = it.next();
-			if(e.isColliding()) it.remove();
-		}
-	}
 	
 	private void render() {
 		gc.setFill(Color.BLACK);
 		gc.fillRect(0, 0, Framework.CANVAS_WIDTH, Framework.CANVAS_HEIGHT);
 		
-		starfield.render(gc);
+		// Render the objects in the level controller.
+		lc.renderObjects(gc);
 		
-		Iterator<Projectile> pit = projectiles.iterator();
-		while(pit.hasNext()) {
-			Projectile p = pit.next();
-			p.render(gc);
-		}
-		
-		Iterator<Enemy> eit = enemies.iterator();
-		while(eit.hasNext()) {
-			Enemy e = eit.next();
-			e.render(gc);
-		}
-		
+		// Draw the player.
 		player.render(gc);
 	}
 	

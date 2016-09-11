@@ -13,20 +13,27 @@ public class Formation {
 	private WBGenerator wb;
 	private long lastUpdate;
 	private long cooldown;
+	private int count;
 	
 	public Formation(Enemy.Type enemyType, Pair<Double> spawnLocation,
 					 MBGenerator mb, WBGenerator wb,
-					 long currentTime, long cooldown) {
+					 long currentTime, long cooldown,
+					 int count) {
 		this.enemyType = enemyType;
 		this.spawnLocation = spawnLocation;
 		this.mb = mb;
 		this.wb = wb;
 		this.lastUpdate = currentTime;
 		this.cooldown = cooldown;
+		this.count = count;
 	}
 
 	public boolean onCooldown(long currentTime) {
 		return ((currentTime - lastUpdate) < cooldown);
+	}
+	
+	public boolean isFinished() {
+		return (count <= 0);
 	}
 	
 	public List<Enemy> produce(long currentTime) {
@@ -35,6 +42,7 @@ public class Formation {
 										 (mb == null)?null:mb.create(), 
 										 (wb == null)?null:wb.create()));
 		lastUpdate = currentTime;
+		count--;
 		return enemies;
 	}
 	

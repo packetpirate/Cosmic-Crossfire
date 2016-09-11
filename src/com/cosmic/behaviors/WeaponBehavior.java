@@ -43,12 +43,12 @@ public class WeaponBehavior {
 	// PRE-DEFINED WEAPON BEHAVIORS START
 	
 	public static final WeaponBehavior BASIC_FIRE(boolean targeted) {
-		return new WeaponBehavior(250.0, targeted, 1000) {
+		return new WeaponBehavior(250.0, targeted, 2000) {
 			@Override
 			public List<Projectile> fire(int id, Pair<Double> pos, Pair<Double> playerPos, double theta, long currentTime) {
 				recharge(currentTime);
 				if(isTargeted()) theta = Framework.getHypotenuse(pos, playerPos);
-				Projectile p = new Projectile(id, pos, theta, 5.0, 4.0);
+				Projectile p = new Projectile(id, pos, theta, 2.5, 4.0);
 				List<Projectile> shots = new ArrayList<Projectile>();
 				shots.add(p);
 				return shots;
@@ -57,12 +57,12 @@ public class WeaponBehavior {
 	}
 	
 	public static final WeaponBehavior RAPID_FIRE(boolean targeted) {
-		return new WeaponBehavior(400.0, targeted, 500) {
+		return new WeaponBehavior(400.0, targeted, 1000) {
 			@Override
 			public List<Projectile> fire(int id, Pair<Double> pos, Pair<Double> playerPos, double theta, long currentTime) {
 				recharge(currentTime);
 				if(isTargeted()) theta = Framework.getHypotenuse(pos, playerPos);
-				Projectile p = new Projectile(id, pos, theta, 5.0, 4.0);
+				Projectile p = new Projectile(id, pos, theta, 3.0, 4.0);
 				List<Projectile> shots = new ArrayList<Projectile>();
 				shots.add(p);
 				return shots;
@@ -71,7 +71,7 @@ public class WeaponBehavior {
 	}
 	
 	public static final WeaponBehavior SHOTG_FIRE(boolean targeted) {
-		return new WeaponBehavior(300.0, targeted, 2000) {
+		return new WeaponBehavior(300.0, targeted, 3000) {
 			@Override
 			public List<Projectile> fire(int id, Pair<Double> pos, Pair<Double> playerPos, double theta, long currentTime) {
 				recharge(currentTime);
@@ -79,7 +79,7 @@ public class WeaponBehavior {
 				if(isTargeted()) theta = Framework.getHypotenuse(pos, playerPos);
 				for(int i = 0; i < 5; i++) {
 					double th = (theta - (Math.PI / 9)) + (Framework.rand.nextDouble() * (Math.PI / 4.5));
-					Projectile p = new Projectile(id, pos, th, 5.0, 5.0);
+					Projectile p = new Projectile(id, pos, th, 2.5, 5.0);
 					shots.add(p);
 				}
 				
