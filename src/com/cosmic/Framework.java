@@ -46,6 +46,8 @@ public class Framework {
 	private List<Enemy> enemies;
 	private List<Projectile> projectiles;
 	
+	private long lastUpdate;
+	
 	public Framework(Stage stage) {
 		mainStage = stage;
 		mainStage.setResizable(false);
@@ -85,6 +87,7 @@ public class Framework {
 				currentTime /= Framework.NANO_TO_MS;
 				update(currentTime);
 				render();
+				lastUpdate = currentTime;
 			}
 		}.start();
 		
@@ -98,6 +101,9 @@ public class Framework {
 	}
 	
 	private void update(long currentTime) {
+		// TODO: Fix delta time calculation? Formation still not moving properly.
+		double deltaTime = ((double)currentTime - (double)lastUpdate) * (1.0f / 1000L);
+		
 		starfield.update(currentTime);
 		
 		checkProjectileCollisions();
@@ -108,7 +114,7 @@ public class Framework {
 		Iterator<Enemy> eit = enemies.iterator();
 		while(eit.hasNext()) {
 			Enemy e = eit.next();
-			List<Projectile> shots = e.update(currentTime, player.getPosition());
+			List<Projectile> shots = e.update(currentTime, deltaTime, player.getPosition());
 			projectiles.addAll(shots);
 		}
 		

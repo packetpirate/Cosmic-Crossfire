@@ -8,7 +8,6 @@ import com.cosmic.Globals;
 import com.cosmic.behaviors.MovementBehavior;
 import com.cosmic.behaviors.WeaponBehavior;
 import com.cosmic.entities.Enemy;
-import com.cosmic.entities.Player;
 import com.cosmic.entities.Projectile;
 import com.cosmic.utils.IDGenerator;
 import com.cosmic.utils.Pair;
@@ -26,8 +25,8 @@ public class Enemy_Drone extends Enemy {
 	}
 
 	@Override
-	public List<Projectile> update(long currentTime, Pair<Double> playerPos) {
-		position = getMovementBehavior().move(getPosition(), playerPos);
+	public List<Projectile> update(long currentTime, double deltaTime, Pair<Double> playerPos) {
+		position = getMovementBehavior().move(getPosition(), playerPos, deltaTime);
 		theta = Framework.getHypotenuse(getPosition(), playerPos);
 		List<Projectile> shots = new ArrayList<Projectile>();
 		if(getWeaponBehavior().canFire(currentTime) &&

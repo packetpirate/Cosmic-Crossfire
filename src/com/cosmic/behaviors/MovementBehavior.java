@@ -18,7 +18,7 @@ public class MovementBehavior {
 	 * @param currPos The current position of the enemy ship.
 	 * @return The new position of the enemy ship after applying the movement behavior.
 	 */
-	public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos) {
+	public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, double deltaTime) {
 		// Must be overridden.
 		return null;
 	}
@@ -28,7 +28,7 @@ public class MovementBehavior {
 	
 	public static final MovementBehavior SHIP_DRONE = new MovementBehavior(2.0) {
 		@Override
-		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos) {
+		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, double deltaTime) {
 			Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
 			
 			if(!Framework.inRange(currPos, playerPos, Enemy_Drone.FIRING_DIST)) {
@@ -45,7 +45,7 @@ public class MovementBehavior {
 	public static final MovementBehavior SHIP_KAMIK = new MovementBehavior(2.0) {
 
 		@Override
-		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos) {
+		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, double deltaTime) {
 			Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
 			if(currPos != playerPos) {
 				// Move closer to the player.
@@ -66,14 +66,14 @@ public class MovementBehavior {
 	
 	public static final MovementBehavior FORM_ORBIT = new MovementBehavior(2.5) {
 		@Override
-		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos) {
+		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, double deltaTime) {
 			Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
 			
 			double r = (Framework.CANVAS_WIDTH / 2) - Player.SHIP_SIZE;
 			double cX = (Framework.CANVAS_WIDTH / 2);
 			double cY = (Framework.CANVAS_HEIGHT / 2);
 			newPos.x = cX + (r * Math.cos(Framework.getHypotenuse(currPos, new Pair<Double>(cX, cY)) + (Math.PI / 90)));
-			newPos.y = cY + (r * Math.sin(Framework.getHypotenuse(currPos, new Pair<Double>(cX, cY)) + (Math.PI / 90)));
+			newPos.y = cY + (r * Math.sin(deltaTime * Framework.getHypotenuse(currPos, new Pair<Double>(cX, cY)) + (Math.PI / 90)));
 			
 			return newPos;
 		}
