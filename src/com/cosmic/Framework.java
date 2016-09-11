@@ -73,7 +73,6 @@ public class Framework {
 		player = new Player();
 		
 		enemies = new ArrayList<Enemy>();
-		//enemies.add(new Enemy_Kamikaze(new Pair<Double>(48.0, 48.0))); // TODO: For testing. Remove later.
 		enemies.add(Formation.GenerateEnemy(Enemy.Type.KAMIKAZE, new Pair<Double>((Framework.CANVAS_WIDTH / 2.0), 32.0), 
 										    MovementBehavior.FORM_ORBIT, null));
 		

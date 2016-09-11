@@ -27,6 +27,10 @@ public class MovementBehavior {
 		return null;
 	}
 	
+	public double getHeading(Pair<Double> oldPos, Pair<Double> newPos, Pair<Double> playerPos) {
+		return Framework.getHypotenuse(newPos, playerPos);
+	}
+	
 	// =========================================
 	// PRE-DEFINED MOVEMENT BEHAVIORS START HERE
 	
@@ -69,18 +73,13 @@ public class MovementBehavior {
 	// PRE-DEFINED FORMATION BEHAVIORS START
 	
 	public static final MovementBehavior FORM_ORBIT = new MovementBehavior(2.5) {
-		private long startTime;
-		{ // Pseudo-Constructor
-			
-		}
-		
 		@Override
 		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos, long currentTime) {
 			Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
 			
-			if(startTime == Long.MAX_VALUE) startTime = currentTime;
+			if(getStartTime() == Long.MAX_VALUE) setStartTime(currentTime);
 			
-			double t = (currentTime - startTime) / 1000.0;
+			double t = (currentTime - getStartTime()) / 1000.0;
 			double r = (Framework.CANVAS_WIDTH / 2) - Player.SHIP_SIZE;
 			double cX = (Framework.CANVAS_WIDTH / 2);
 			double cY = (Framework.CANVAS_HEIGHT / 2);
@@ -88,6 +87,11 @@ public class MovementBehavior {
 			newPos.y = cY + (r * Math.sin(t % (Math.PI * 2)));
 			
 			return newPos;
+		}
+		
+		@Override
+		public double getHeading(Pair<Double> oldPos, Pair<Double> newPos, Pair<Double> playerPos) {
+			return Framework.getHypotenuse(oldPos, newPos);
 		}
 	};
 	
