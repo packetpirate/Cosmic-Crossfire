@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import com.cosmic.behaviors.Formation;
+import com.cosmic.behaviors.MovementBehavior;
 import com.cosmic.entities.Enemy;
 import com.cosmic.entities.Player;
 import com.cosmic.entities.Projectile;
@@ -69,7 +71,9 @@ public class Framework {
 		player = new Player();
 		
 		enemies = new ArrayList<Enemy>();
-		enemies.add(new Enemy_Kamikaze(new Pair<Double>(48.0, 48.0)));
+		//enemies.add(new Enemy_Kamikaze(new Pair<Double>(48.0, 48.0))); // TODO: For testing. Remove later.
+		enemies.add(Formation.GenerateEnemy(Enemy.Type.KAMIKAZE, new Pair<Double>((Framework.CANVAS_WIDTH / 2.0), 32.0), 
+										    MovementBehavior.FORM_ORBIT, null));
 		
 		projectiles = new ArrayList<Projectile>();
 		

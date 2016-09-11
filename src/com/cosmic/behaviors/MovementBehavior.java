@@ -1,6 +1,7 @@
 package com.cosmic.behaviors;
 
 import com.cosmic.Framework;
+import com.cosmic.entities.Player;
 import com.cosmic.entities.enemies.Enemy_Drone;
 import com.cosmic.utils.Pair;
 
@@ -22,6 +23,7 @@ public class MovementBehavior {
 		return null;
 	}
 	
+	// =========================================
 	// PRE-DEFINED MOVEMENT BEHAVIORS START HERE
 	
 	public static final MovementBehavior SHIP_DRONE = new MovementBehavior(2.0) {
@@ -59,4 +61,35 @@ public class MovementBehavior {
 	// TODO: More movement behaviors!
 	
 	// PRE-DEFINED MOVEMENT BEHAVIORS END HERE
+	// =======================================
+	// PRE-DEFINED FORMATION BEHAVIORS START
+	
+	public static final MovementBehavior FORM_ORBIT = new MovementBehavior(2.5) {
+		@Override
+		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos) {
+			Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
+			
+			double r = (Framework.CANVAS_WIDTH / 2) - Player.SHIP_SIZE;
+			double cX = (Framework.CANVAS_WIDTH / 2);
+			double cY = (Framework.CANVAS_HEIGHT / 2);
+			newPos.x = cX + (r * Math.cos(Framework.getHypotenuse(currPos, new Pair<Double>(cX, cY)) + (Math.PI / 90)));
+			newPos.y = cY + (r * Math.sin(Framework.getHypotenuse(currPos, new Pair<Double>(cX, cY)) + (Math.PI / 90)));
+			
+			return newPos;
+		}
+	};
+	
+	// MOVEMENT BEHAVIOR SKELETON HERE
+	/*
+	 * public static final MovementBehavior MOVE_NAME = new MovementBehavior(double moveSpeed) {
+		   @Override
+		   public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos) {
+			   Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
+			
+			   return newPos;
+		   }
+	   };
+	 */
+	
+	// PRE-DEFINED FORMATION BEHAVIORS END
 }

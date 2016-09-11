@@ -5,6 +5,8 @@ import java.util.List;
 import com.cosmic.Framework;
 import com.cosmic.behaviors.MovementBehavior;
 import com.cosmic.behaviors.WeaponBehavior;
+import com.cosmic.entities.enemies.Enemy_Drone;
+import com.cosmic.entities.enemies.Enemy_Kamikaze;
 import com.cosmic.utils.Pair;
 import com.cosmic.utils.Tools;
 
@@ -25,13 +27,17 @@ public abstract class Enemy {
 		return Framework.inRange(pos, position, image.getWidth());
 	}
 	protected double theta;
+	public double getTheta() { return theta; }
+	public void setTheta(double theta) { this.theta = theta; }
 	
 	private MovementBehavior mb;
 	public MovementBehavior getMovementBehavior() { return mb; }
+	public void overrideMovementBehavior(MovementBehavior mb) { this.mb = mb; }
 	public void move(Pair<Double> playerPos) { mb.move(position, playerPos); }
 	
 	private WeaponBehavior wb;
 	public WeaponBehavior getWeaponBehavior() { return wb; }
+	public void overrideWeaponBehavior(WeaponBehavior wb) { this.wb = wb; }
 	public void fire(Pair<Double> playerPos, long currentTime) { 
 		wb.fire(id, position, Framework.getHypotenuse(position, playerPos), currentTime); 
 	}
@@ -52,4 +58,17 @@ public abstract class Enemy {
 	
 	public static final Image SHIP_DRONE = Tools.LoadImage("enemy_ship1.png");
 	public static final Image SHIP_KAMIK = Tools.LoadImage("enemy_ship2.png");
+	
+	public enum Type {
+		DRONE, KAMIKAZE;
+		
+		public static Enemy createInstance(Type t, Pair<Double> pos) {
+			Enemy e = null;
+			
+			if(t == Type.DRONE) return new Enemy_Drone(pos);
+			else if(t == Type.KAMIKAZE) return new Enemy_Kamikaze(pos);
+			
+			return e;
+		}
+	}
 }
