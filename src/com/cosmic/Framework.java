@@ -6,11 +6,9 @@ import java.util.List;
 import java.util.Random;
 
 import com.cosmic.behaviors.Formation;
-import com.cosmic.behaviors.MovementBehavior;
 import com.cosmic.entities.Enemy;
 import com.cosmic.entities.Player;
 import com.cosmic.entities.Projectile;
-import com.cosmic.entities.enemies.Enemy_Kamikaze;
 import com.cosmic.gfx.Starfield;
 import com.cosmic.utils.IDGenerator;
 import com.cosmic.utils.Pair;
@@ -46,7 +44,7 @@ public class Framework {
 	private List<Enemy> enemies;
 	private List<Projectile> projectiles;
 	
-	private long lastUpdate;
+	private List<Formation> formations;
 	
 	public Framework(Stage stage) {
 		mainStage = stage;
@@ -73,12 +71,12 @@ public class Framework {
 		player = new Player();
 		
 		enemies = new ArrayList<Enemy>();
-		enemies.add(Formation.GenerateEnemy(Enemy.Type.KAMIKAZE, new Pair<Double>((Framework.CANVAS_WIDTH / 2.0), 32.0), 
-										    MovementBehavior.FORM_ORBIT, null));
-		
 		projectiles = new ArrayList<Projectile>();
+		formations = new ArrayList<Formation>();
 		
 		final long startTime = System.nanoTime();
+		
+		//form1 = new Formation(Enemy.Type.KAMIKAZE, new Pair<Double>((Framework.CANVAS_WIDTH + 32.0), 32.0), () -> MovementBehavior.FORM_ORBIT(), null, (startTime / Framework.NANO_TO_MS), 1500);
 		
 		new AnimationTimer() {
 			@Override
@@ -86,7 +84,6 @@ public class Framework {
 				currentTime /= Framework.NANO_TO_MS;
 				update(currentTime);
 				render();
-				lastUpdate = currentTime;
 			}
 		}.start();
 		
@@ -100,9 +97,6 @@ public class Framework {
 	}
 	
 	private void update(long currentTime) {
-		// TODO: Fix delta time calculation? Formation still not moving properly.
-		double deltaTime = ((double)currentTime - (double)lastUpdate) * (1.0f / 1000L);
-		
 		starfield.update(currentTime);
 		
 		checkProjectileCollisions();
@@ -121,6 +115,13 @@ public class Framework {
 		while(pit.hasNext()) {
 			Projectile p = pit.next();
 			p.update();
+		}
+		
+		// 
+		Iterator<Formation> fit = formations.iterator();
+		while(fit.hasNext()) {
+			Formation f = fit.next();
+			if(!f.onCooldown(currentTime)) enemies.addAll(f.produce(currentTime));
 		}
 	}
 	
