@@ -3,6 +3,7 @@ package com.cosmic.entities;
 import java.util.List;
 
 import com.cosmic.Framework;
+import com.cosmic.Globals;
 import com.cosmic.utils.Pair;
 import com.cosmic.utils.Tools;
 
@@ -18,7 +19,6 @@ public class Player {
 	public static final int MAX_HEALTH = 4;
 	public static final int MAX_LIVES = 3;
 	public static final double SPEED = 2.5;
-	private static final boolean SHOW_COLLIDER = false;
 	
 	private int state;
 	public int getState() { return state; }
@@ -35,11 +35,16 @@ public class Player {
 	
 	private int lives;
 	public int getLives() { return lives; }
-	public void die() { 
-		lives--;
-		reset(gameOver());
+	public void die() {
+		if(!isInvincible()) {
+			lives--;
+			reset(gameOver());
+		}
 	}
 	public boolean gameOver() { return (lives == 0); }
+	public boolean isInvincible() {
+		return false;
+	}
 	
 	private Pair<Double> position;
 	public Pair<Double> getPosition() { return position; }
@@ -52,11 +57,17 @@ public class Player {
 		return Framework.inRange(pos, position, Player.SHIP_SIZE);
 	}
 	
+	public boolean collision(Enemy e) {
+		double dist = Framework.distance(getPosition(), e.getPosition());
+		return (dist <= ((e.getShipSize() / 2) + (getShipSize() / 2)));
+	}
+	
 	private PowerUps pwrUps;
 	public PowerUps getPowerUps() { return pwrUps; }
 	
 	private Image image;
 	public Image getImage() { return image; }
+	public double getShipSize() { return image.getWidth(); }
 	
 	public Player() {
 		state = 0;
@@ -107,11 +118,11 @@ public class Player {
 			gc.strokeRect(x, y, Player.SHIP_SIZE, Player.SHIP_SIZE);
 		}
 		
-		if(Player.SHOW_COLLIDER) {
+		if(Globals.SHOW_COLLIDERS) {
 			gc.setStroke(Color.GREEN);
-			gc.strokeOval((position.x - (Player.SHIP_SIZE / 2)), 
-						  (position.y - (Player.SHIP_SIZE / 2)), 
-						   Player.SHIP_SIZE, Player.SHIP_SIZE);
+			gc.strokeOval((position.x - (getShipSize() / 2)), 
+					  	  (position.y - (getShipSize() / 2)), 
+					  	   getShipSize(), getShipSize());
 		}
 		
 		gc.restore();

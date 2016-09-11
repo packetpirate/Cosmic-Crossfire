@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cosmic.Framework;
+import com.cosmic.Globals;
 import com.cosmic.behaviors.MovementBehavior;
 import com.cosmic.behaviors.WeaponBehavior;
 import com.cosmic.entities.Enemy;
+import com.cosmic.entities.Player;
 import com.cosmic.entities.Projectile;
 import com.cosmic.utils.IDGenerator;
 import com.cosmic.utils.Pair;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 
 public class Enemy_Drone extends Enemy {
@@ -47,6 +50,13 @@ public class Enemy_Drone extends Enemy {
 			gc.drawImage(image, x, y);
 			
 			gc.restore();
+		}
+		
+		if(Globals.SHOW_COLLIDERS) {
+			gc.setStroke(Color.GREEN);
+			gc.strokeOval((position.x - (getShipSize() / 2)), 
+						  (position.y - (getShipSize() / 2)), 
+						   getShipSize(), getShipSize());
 		}
 	}
 }

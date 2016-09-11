@@ -8,7 +8,7 @@ import java.util.Random;
 import com.cosmic.entities.Enemy;
 import com.cosmic.entities.Player;
 import com.cosmic.entities.Projectile;
-import com.cosmic.entities.enemies.Enemy_Drone;
+import com.cosmic.entities.enemies.Enemy_Kamikaze;
 import com.cosmic.gfx.Starfield;
 import com.cosmic.utils.IDGenerator;
 import com.cosmic.utils.Pair;
@@ -69,7 +69,7 @@ public class Framework {
 		player = new Player();
 		
 		enemies = new ArrayList<Enemy>();
-		enemies.add(new Enemy_Drone(new Pair<Double>(48.0, 48.0)));
+		enemies.add(new Enemy_Kamikaze(new Pair<Double>(48.0, 48.0)));
 		
 		projectiles = new ArrayList<Projectile>();
 		
@@ -96,6 +96,26 @@ public class Framework {
 	private void update(long currentTime) {
 		starfield.update(currentTime);
 		
+		checkProjectileCollisions();
+		checkShipCollisions();
+		
+		player.update(currentTime, input);
+		
+		Iterator<Enemy> eit = enemies.iterator();
+		while(eit.hasNext()) {
+			Enemy e = eit.next();
+			List<Projectile> shots = e.update(currentTime, player.getPosition());
+			projectiles.addAll(shots);
+		}
+		
+		Iterator<Projectile> pit = projectiles.iterator();
+		while(pit.hasNext()) {
+			Projectile p = pit.next();
+			p.update();
+		}
+	}
+	
+	private void checkProjectileCollisions() {
 		// Check projectiles for collisions.
 		Iterator<Projectile> pit = projectiles.iterator();
 		Iterator<Enemy> eit = enemies.iterator();
@@ -120,20 +140,29 @@ public class Framework {
 				}
 			}
 		}
-		
-		player.update(currentTime, input);
-		
-		eit = enemies.iterator();
-		while(eit.hasNext()) {
-			Enemy e = eit.next();
-			List<Projectile> shots = e.update(currentTime, player.getPosition());
-			projectiles.addAll(shots);
-		}
-		
-		pit = projectiles.iterator();
-		while(pit.hasNext()) {
-			Projectile p = pit.next();
-			p.update();
+	}
+	
+	private void checkShipCollisions() {
+		// Check ship-to-ship collisions.
+		for(int i = 0; i < enemies.size(); i++) {
+			Enemy ei = enemies.get(i);
+			for(int j = (i + 1); j < enemies.size(); j++) {
+				Enemy ej = enemies.get(j);
+				double dist = Framework.distance(ei.getPosition(), ej.getPosition());
+				if(!(enemies.get(i).equals(enemies.get(j))) && 
+					(dist <= (ei.getShipSize() + ej.getShipSize()))) {
+					// Collision detected between these two enemies.
+					ei.collide();
+					ej.collide();
+				}
+			}
+			
+			// Also check for collision with the player.
+			if(player.isAlive() && player.collision(ei)) {
+				ei.collide();
+				player.die();
+				if(player.gameOver()) reset();
+			}
 		}
 	}
 	
@@ -163,6 +192,12 @@ public class Framework {
 				(x <= Framework.CANVAS_WIDTH) && 
 				(y >= 0) && 
 				(y <= Framework.CANVAS_HEIGHT));
+	}
+	
+	public static double distance(Pair<Double> src, Pair<Double> target) {
+		double a = (target.x - src.x);
+		double b = (target.y - src.y);
+		return Math.sqrt((a * a) + (b * b));
 	}
 	
 	public static boolean inRange(Pair<Double> src, Pair<Double> target, double dist) {

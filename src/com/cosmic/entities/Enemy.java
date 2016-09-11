@@ -18,6 +18,9 @@ public abstract class Enemy {
 	
 	protected Pair<Double> position;
 	public Pair<Double> getPosition() { return position; }
+	private boolean colliding;
+	public boolean isColliding() { return colliding; }
+	public void collide() { colliding = true; }
 	public boolean collision(Pair<Double> pos) {
 		return Framework.inRange(pos, position, image.getWidth());
 	}
@@ -34,6 +37,7 @@ public abstract class Enemy {
 	}
 	
 	protected Image image;
+	public double getShipSize() { return image.getWidth(); }
 
 	public Enemy(int id, Pair<Double> pos, MovementBehavior mb, WeaponBehavior wb) { // Number One
 		this.id = id;

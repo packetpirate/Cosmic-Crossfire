@@ -24,7 +24,7 @@ public class MovementBehavior {
 	
 	// PRE-DEFINED MOVEMENT BEHAVIORS START HERE
 	
-	public static final MovementBehavior SHIP_DRONE = new MovementBehavior(3.0) {
+	public static final MovementBehavior SHIP_DRONE = new MovementBehavior(2.0) {
 		@Override
 		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos) {
 			Pair<Double> newPos = new Pair<>(currPos.x, currPos.y);
@@ -40,7 +40,7 @@ public class MovementBehavior {
 		}
 	};
 	
-	public static final MovementBehavior SHIP_KAMIK = new MovementBehavior(3.0) {
+	public static final MovementBehavior SHIP_KAMIK = new MovementBehavior(2.0) {
 
 		@Override
 		public Pair<Double> move(Pair<Double> currPos, Pair<Double> playerPos) {
